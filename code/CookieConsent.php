@@ -69,7 +69,7 @@ class CookieConsent extends Extension {
 
             Requirements::customCSS($colorPalette->renderWith('Style'));
 
-            Requirements::javascript('gdpr-basics/javascript/cookie-permission.js');
+            Requirements::javascript('gdpr-basics/dist/cookie-permission.min.js');
 
         }
     }

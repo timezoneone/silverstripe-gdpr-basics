@@ -129,6 +129,12 @@ function getCookieConsent(){
 
 waitForAllTheThings(getCookieConsent);
 
+document.addEventListener('CookieConsentGranted', function(){
+    document.body.classList.add('CookieConsentGranted');
+});
+document.addEventListener('CookieConsentDenied', function(){
+    document.body.classList.add('CookieConsentDenied');
+});
 
 
 
