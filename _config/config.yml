@@ -1,0 +1,11 @@
+---
+Name: gdpr-assistant
+---
+
+Page_Controller:
+  extensions:
+    - CookieConsent
+
+SiteConfig:
+  extensions:
+    - SiteConfigGDPR

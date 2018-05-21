@@ -1,0 +1,2 @@
+window.BaseHref = "$DomainName", 
+window.cookieConsentPrompt = '<div id="cookie-consent">' + "$CookieConsentDescription.RAW" + '<div class="cookie-consent-buttons">' + '<a class="button" href="#" id="sweetas">' +"$CookieConsentAgreeButtonLabel.RAW" + '</a><a href="#" id="yeahnah">' + "$CookieConsentDeclineButtonLabel.RAW" + '</a></div></div>' + '<a id="gotCookies" href="#" onclick="document.getElementById(\\'cookie-consent\\').classList.toggle(\\'open\\'); return false;"><img src="gdpr-assistant/images/cookie.svg" height="35px" width="35px" alt="" /></a>';
