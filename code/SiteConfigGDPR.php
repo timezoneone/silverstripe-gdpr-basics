@@ -17,17 +17,19 @@ class SiteConfigGDPR extends DataExtension {
 
         $fields->addFieldsToTab('Root.GDPR', array(
             CheckboxField::create('GDPRIsActive','Is Active'),
-            TextField::create('GTMCode','Google Tag Manager ID'),
-            TextField::create('GACode','Google Analytics ID')->setDescription('Anonymized Google Analytics is used when visitor has not accepted cookies.'),
-            HtmlEditorField::create('CookieConsentDescription'),
-            HTMLEditorField::create(
-                'CookieConsentDescription', 
-                'Cookie Consent Description', 
-                $this->owner->CookieConsentDescription, 
-                'gdpr-basic'
-            ),
-            TextField::create('CookieConsentAgreeButtonLabel'),
-            TextField::create('CookieConsentDeclineButtonLabel')
+            DisplayLogicWrapper::create(
+                TextField::create('GTMCode','Google Tag Manager ID'),
+                TextField::create('GACode','Google Analytics ID')
+                    ->setDescription('Anonymized Google Analytics is used when visitor has not accepted cookies.'),
+                HTMLEditorField::create(
+                    'CookieConsentDescription', 
+                    'Cookie Consent Description', 
+                    $this->owner->CookieConsentDescription, 
+                    'gdpr-basic'
+                ),
+                TextField::create('CookieConsentAgreeButtonLabel'),
+                TextField::create('CookieConsentDeclineButtonLabel')
+            )->displayIf('GDPRIsActive')->isChecked()->end()
         ));
 
     }

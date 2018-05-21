@@ -5,8 +5,9 @@
     "homepage": "http://git.timezoneone.com/timezoneone/silverstripe-gdpr-basics",
     "require": {
         "silverstripe/cms": "~3.0",
-        "silverstripe/framework": "~3.0"
-    },
+        "silverstripe/framework": "~3.0",
+        "silverstripe/display-logic": "1.5.*"
+        },
     "extra": {
         "installer-name": "gdpr-basics"
     }
