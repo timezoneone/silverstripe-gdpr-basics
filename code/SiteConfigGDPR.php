@@ -18,7 +18,7 @@ class SiteConfigGDPR extends DataExtension {
         $fields->addFieldsToTab('Root.GDPR', array(
             CheckboxField::create('GDPRIsActive','Is Active'),
             TextField::create('GTMCode','Google Tag Manager ID'),
-            TextField::create('GACode','Google Analytics ID')->setDescription('Used when visitor has not accepted cookies. Only fill this field if IP address is anonymized in Google Analytics'),
+            TextField::create('GACode','Google Analytics ID')->setDescription('Anonymized Google Analytics is used when visitor has not accepted cookies.'),
             HtmlEditorField::create('CookieConsentDescription'),
             HTMLEditorField::create(
                 'CookieConsentDescription', 
