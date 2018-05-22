@@ -20,12 +20,12 @@ class DataControlRequest extends DataObject{
     }
 
     public function onAfterWrite(){
-
-        $from = 'test@timezoneone.com'; //Data Control Officer email
+        $config = SiteConfig::current_site_config();
+        $from = $config->DataProtectionOfficer()->Email; 
         $to = $this->Email;
         $subject= 'Data Control Request Verification';
         $body = 'Hi ' . $this->FirstName ."\n". "\n";
-        $body .= 'We have received a request to ' . strtolower($action) . '. If you did not make this request, please ignore this email. Otherwise, please click the link below so that we can confirm your ownership of this email address and process your request'."\n". "\n";
+        $body .= 'We have received a request to '.strtolower($this->RequiredAction).'. If you did not make this request, please ignore this email. Otherwise, please click the link below so that we can confirm your ownership of this email address and process your request'."\n". "\n";
         $body .= ''; 
         $email = new Email($from, $to, $subject, $body);
         $email->sendPlain();

@@ -53,11 +53,12 @@ class DataControlFormController extends Page_Controller  {
             $Page->ID = -1 * rand(1,10000000);
             $controller = Page_Controller::create($Page);
             $controller->init();
+            $config = SiteConfig::current_site_config();
+            $dataProtectionOfficer = $config->DataProtectionOfficer();
 
             $Page = $controller->customise(array(
                 'Title' => 'Confirm ownership',
-                'Content' => DBField::create_field('HTMLText', '<p>Before we can action your request to '.$UsersRequest.', we need to verify that you are the owner of this email address. Please click the verification link in the email we\'ve sent you.</p><p>If you have any trouble, please contact our <a href="mailto:">Data Protection Officer</a>'),
-                'Form' => $this->DataRequestForm()
+                'Content' => DBField::create_field('HTMLText', '<p>Before we can action your request to '.$UsersRequest.', we need to verify that you are the owner of this email address. Please click the verification link in the email we\'ve sent you.</p><p>If you have any trouble, please contact our <a href="mailto:'.$dataProtectionOfficer->Email.'">Data Protection Officer, '. $dataProtectionOfficer->FirstName.' '. $dataProtectionOfficer->LastName.'</a>')
             ));
 
             return $Page->renderWith('Page');

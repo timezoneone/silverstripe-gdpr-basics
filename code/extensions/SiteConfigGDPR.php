@@ -16,7 +16,8 @@ class SiteConfigGDPR extends DataExtension {
 
     private static $has_one = array(
         'PrivacyPolicyPage' => 'Page',
-        'CookiePolicyPage' => 'Page'
+        'CookiePolicyPage' => 'Page',
+        'DataProtectionOfficer' => 'Member'
     );
 
     public function updateCMSFields(FieldList $fields) {
@@ -38,6 +39,11 @@ class SiteConfigGDPR extends DataExtension {
         $fields->addFieldsToTab('Root.GDPR', array(
             CheckboxField::create('GDPRIsActive','Is Active'),
             DisplayLogicWrapper::create(array(
+                DropdownField::create(
+                    'DataProtectionOfficerID', 
+                    'Data Protection Officer', 
+                    Member::get()->filter(array('Groups.Code' => 'Administrators'))->map('ID', 'Email')
+                    )->setEmptyString(''),
                 TextField::create('GTMCode','Google Tag Manager ID')
                     ->setDescription('Google Tag Manager is only used if user agrees to tracking cookies'),
                 TextField::create('GACode','Google Analytics ID')
