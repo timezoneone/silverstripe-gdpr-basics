@@ -7,6 +7,7 @@ class SiteConfigGDPR extends DataExtension {
         'CookieConsentDescription' => 'HTMLText',
         'CookieConsentAgreeButtonLabel' => 'Varchar(255)',
         'CookieConsentDeclineButtonLabel' => 'Varchar(255)',
+        'PrivacyPolicyDescription' => 'HTMLText',
         'GTMCode' => 'Varchar(16)',
         'GACode' => 'Varchar(16)',
         'PrimaryColor' => 'Color'
@@ -36,10 +37,20 @@ class SiteConfigGDPR extends DataExtension {
                             TextField::create('CookieConsentDeclineButtonLabel'),
                             ColorField::create('PrimaryColor', 'Cookie Notice Color')
                         )
+                    ),
+                    ToggleCompositeField::create('PrivacyPolicy','Privacy Policy', 
+                        array(
+                            HTMLEditorField::create(
+                                'PrivacyPolicyDescription', 
+                                'Basic Privacy Policy Description', 
+                                $this->owner->PrivacyPolicyDescription, 
+                                'gdpr-basic'
+                            )->setRows(4)->setDescription('A brief description of what you collect data. This will appear on all forms')
+                        )
                     )
                 )
             )->displayIf('GDPRIsActive')->isChecked()->end()
-        ));
-
+        )
+        );
     }
 }
