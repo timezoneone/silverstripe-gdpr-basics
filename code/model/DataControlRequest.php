@@ -6,7 +6,7 @@ class DataControlRequest extends DataObject{
         'FirstName' => 'Varchar(255)',
         'LastName' => 'Varchar(255)',
         'Email' => 'Varchar(255)',
-        'SecurityID' => 'Varchar(255)',
+        'Verification' => 'Varchar(255)',
         'RequiredAction' => 'Enum("Provide data, Delete Data")',
         'Status' => 'Enum("Awaiting Verification, Ready to action, In progress, Complete")',
         'DateRequested' => 'Date'
@@ -26,10 +26,13 @@ class DataControlRequest extends DataObject{
             $from = $config->DataProtectionOfficer()->Email; 
             $to = $this->Email;
             $subject= 'Data Control Request Verification';
-            $body = 'Hi ' . $this->FirstName ."\n". "\n";
+            $body = 'Hi ' . $this->FirstName ."\n"."\n";
             $body .= 'We have received a request to '.strtolower($this->RequiredAction).'. If you did not make this request, please ignore this email. Otherwise, please click the link below so that we can confirm your ownership of this email address and process your request'."\n". "\n";
-            //@TODO add verification link ?verification=SecurityID&request=ID
-            $body .= ''; 
+            $body .= SiteConfigGDPR::siteURL() . '/data-control/confirm?verification='.$this->Verification.'&request='.$this->ID."\n"."\n"; 
+            $body .= 'Kind Regards,'."\n";
+            $body .= $config->DataProtectionOfficer()->FirstName.' '.$config->DataProtectionOfficer()->LastName."\n";
+            $body .= 'Data Protection Officer (DPO)'."\n";
+            $body .= $config->Title;
             $email = new Email($from, $to, $subject, $body);
             $email->sendPlain();
         }

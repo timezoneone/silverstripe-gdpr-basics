@@ -43,7 +43,7 @@ class DataControlFormController extends Page_Controller  {
             $record->FirstName  = filter_var($formData['FirstName'], FILTER_SANITIZE_STRING);
             $record->LastName   = filter_var($formData['LastName'], FILTER_SANITIZE_STRING);
             $record->Email      = filter_var($formData['Email'], FILTER_SANITIZE_EMAIL);
-            $record->SecurityID = filter_var($formData['SecurityID'], FILTER_SANITIZE_STRING);
+            $record->Verification = filter_var($formData['SecurityID'], FILTER_SANITIZE_STRING);
             $record->RequiredAction  = isset($formData['action_RemoveData']) ? 'Delete Data' : 'Provide data';
             $record->Status     = 'Awaiting Verification';
             $record->write();
@@ -78,11 +78,11 @@ class DataControlFormController extends Page_Controller  {
 
         }else{
 
-            $SecurityID = filter_var($data['verification'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $Verification = filter_var($data['verification'], FILTER_SANITIZE_SPECIAL_CHARS);
             $ID = filter_var($data['request'], FILTER_SANITIZE_SPECIAL_CHARS);
 
             //look up record in database..
-            $record = DataControlRequest::get()->filter(array('SecurityID'=>$SecurityID, 'ID'=> $ID))->First();
+            $record = DataControlRequest::get()->filter(array('Verification'=>$Verification, 'ID'=> $ID))->First();
 
             if($record->Exists()){
                 //update record in Database.
