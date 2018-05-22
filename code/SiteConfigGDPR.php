@@ -21,7 +21,7 @@ class SiteConfigGDPR extends DataExtension {
             DisplayLogicWrapper::create(
                 array(
                     TextField::create('GTMCode','Google Tag Manager ID')
-                        ->setDescription('Google Tag Manager is onlu used if user agrees to tracking cookies'),
+                        ->setDescription('Google Tag Manager is only used if user agrees to tracking cookies'),
                     TextField::create('GACode','Google Analytics ID')
                         ->setDescription('Anonymized Google Analytics is used when visitor has not accepted cookies.'),
                     ToggleCompositeField::create('CookiePolicy','Cookie Policy', 
