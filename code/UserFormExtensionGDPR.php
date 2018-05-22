@@ -10,8 +10,15 @@ class UserFormExtensionGDPR extends Extension {
 
             if($siteConfig->PrivacyPolicyDescription || $siteConfig->PrivacyPolicyPage){
 
-                $html = $siteConfig->PrivacyPolicyDescription ? $siteConfig->PrivacyPolicyDescription : '';
-                $html .= $siteConfig->PrivacyPolicyPage() ? '<p><a href="'.$siteConfig->PrivacyPolicyPage()->Link().'">'.$siteConfig->PrivacyPolicyPage()->Title.'</a></p>' : '';
+                $desc = $siteConfig->PrivacyPolicyDescription;
+                $privacyPage = $siteConfig->PrivacyPolicyPage();
+
+                $html =  $desc ? $desc : '';
+
+                //if link is included in the description, we don't need to include it again...
+                if($privacyPage && !strpos($desc, $privacyPage->Link())){
+                    $html .= '<p><a href="'.$privacyPage->Link().'">'.$privacyPage->Title.'</a></p>';
+                }
 
                 $fields->push(LiteralField::create('PrivacyMessage',$html));
 
