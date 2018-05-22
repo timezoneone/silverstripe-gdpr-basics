@@ -7,11 +7,16 @@
 
 class DeleteUserformSubmissionsTask extends BuildTask {
 
-    public $title = 'Delete user form submission for given a time period.';
+    public $title = 'GDPR - Delete user form submission for given a time period.';
 
     public function run($request)
     {
         $months = SiteConfig::current_site_config()->DeleteUserformSubmissionsAfter;
+        $isGdprActive = SiteConfig::current_site_config()->GDPRIsActive;
+        if (!$isGdprActive) {
+            echo '<h3>GDPR is disabled in site settings. No submissions were deleted.</h3>';
+            exit();
+        }
         if (is_numeric($months)) {
             $dtForSelectedValue = date('Y-m-d H:i:s', strtotime('-'.$months. ' months'));
             $submissionsToBeDeleted = SubmittedForm::get()->filter('Created:LessThan', $dtForSelectedValue);
