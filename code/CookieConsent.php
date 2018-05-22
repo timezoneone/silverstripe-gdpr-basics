@@ -64,7 +64,7 @@ class CookieConsent extends Extension {
             Requirements::customScript($cookieConsentPrompt->renderWith('cookieConsentPrompt'));
 
             $colorPalette = new ArrayData([
-                'PrimaryColor' => '#D65922'
+                'PrimaryColor' => $this->siteConfig->PrimaryColor ? '#'.$this->siteConfig->PrimaryColor : '#D65922'
             ]);
 
             Requirements::customCSS($colorPalette->renderWith('Style'));

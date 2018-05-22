@@ -9,6 +9,7 @@ class SiteConfigGDPR extends DataExtension {
         'CookieConsentDeclineButtonLabel' => 'Varchar(255)',
         'GTMCode' => 'Varchar(16)',
         'GACode' => 'Varchar(16)',
+        'PrimaryColor' => 'Color'
     );
 
     public function updateCMSFields(FieldList $fields) {
@@ -28,7 +29,8 @@ class SiteConfigGDPR extends DataExtension {
                     'gdpr-basic'
                 ),
                 TextField::create('CookieConsentAgreeButtonLabel'),
-                TextField::create('CookieConsentDeclineButtonLabel')
+                TextField::create('CookieConsentDeclineButtonLabel'),
+                ColorField::create('PrimaryColor')
             )->displayIf('GDPRIsActive')->isChecked()->end()
         ));
 
