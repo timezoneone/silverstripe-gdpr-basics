@@ -8,7 +8,8 @@ class DataControlFormController extends Page_Controller  {
 
     private static $allowed_actions = array(
         'index',
-        'verify'
+        'verify',
+        'confirm'
     );
 
     public function index(){
@@ -59,6 +60,47 @@ class DataControlFormController extends Page_Controller  {
             $Page = $controller->customise(array(
                 'Title' => 'Confirm ownership',
                 'Content' => DBField::create_field('HTMLText', '<p>Before we can action your request to '.$UsersRequest.', we need to verify that you are the owner of this email address. Please click the verification link in the email we\'ve sent you.</p><p>If you have any trouble, please contact our <a href="mailto:'.$dataProtectionOfficer->Email.'">Data Protection Officer, '. $dataProtectionOfficer->FirstName.' '. $dataProtectionOfficer->LastName.'</a>')
+            ));
+
+            return $Page->renderWith('Page');
+
+        }
+
+    }
+
+    public function confirm($request){
+
+        $data = $request->getVars();
+
+        if( empty($data) || !isset($data['verification']) || !isset($data['request']) ){
+
+           return $this->httpError(404);
+
+        }else{
+
+            $SecurityID = filter_var($data['verification'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $ID = filter_var($data['request'], FILTER_SANITIZE_SPECIAL_CHARS);
+
+            //look up record in database..
+            $record = DataControlRequest::get()->filter(array('SecurityID'=>$SecurityID, 'ID'=> $ID))->First();
+
+            if($record->Exists()){
+                //update record in Database.
+                $record->Status     = 'Ready to action';
+                $record->write();
+            }
+
+            $UsersRequest = isset($formData['action_RemoveData']) ? 'delete your data' : 'provide a copy of your data';
+            $Page = Page::create();
+            $Page->ID = -1 * rand(1,10000000);
+            $controller = Page_Controller::create($Page);
+            $controller->init();
+            $config = SiteConfig::current_site_config();
+            $dataProtectionOfficer = $config->DataProtectionOfficer();
+
+            $Page = $controller->customise(array(
+                'Title' => 'Request Received',
+                'Content' => DBField::create_field('HTMLText', '<p>Thank you. Your request to '.$UsersRequest.' has been received. Our <a href="mailto:'.$dataProtectionOfficer->Email.'">Data Protection Officer</a> will be in touch.</p>')
             ));
 
             return $Page->renderWith('Page');
