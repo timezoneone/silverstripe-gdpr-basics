@@ -31,7 +31,7 @@ class SiteConfigGDPR extends DataExtension {
                                 'Cookie Consent Description', 
                                 $this->owner->CookieConsentDescription, 
                                 'gdpr-basic'
-                            ),
+                            )->setRows(4),
                             TextField::create('CookieConsentAgreeButtonLabel'),
                             TextField::create('CookieConsentDeclineButtonLabel'),
                             ColorField::create('PrimaryColor', 'Cookie Notice Color')

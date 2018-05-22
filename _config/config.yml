@@ -1,5 +1,5 @@
 ---
-Name: gdpr-assistant
+Name: gdpr-basics
 ---
 
 Page_Controller:
@@ -9,3 +9,7 @@ Page_Controller:
 SiteConfig:
   extensions:
     - SiteConfigGDPR
+
+LeftAndMain:
+  extra_requirements_css:
+    - gdpr-basics/admin.css
