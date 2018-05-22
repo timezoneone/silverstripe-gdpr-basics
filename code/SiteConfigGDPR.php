@@ -7,7 +7,7 @@ class SiteConfigGDPR extends DataExtension {
         'CookieConsentDescription' => 'HTMLText',
         'CookieConsentAgreeButtonLabel' => 'Varchar(255)',
         'CookieConsentDeclineButtonLabel' => 'Varchar(255)',
-        'PrivacyPolicyDescription' => 'HTMLText',
+        'PrivacyPolicyDisclosure' => 'HTMLText',
         'GTMCode' => 'Varchar(16)',
         'GACode' => 'Varchar(16)',
         'PrimaryColor' => 'Color'
@@ -51,9 +51,9 @@ class SiteConfigGDPR extends DataExtension {
                         SiteTree::get()->exclude(array('ClassName'=>'BlogPost', 'ClassName'=>'TOPage'))->map('ID', 'Title')
                         )->setEmptyString(''),
                     HTMLEditorField::create(
-                        'PrivacyPolicyDescription', 
-                        'Basic Privacy Policy Description', 
-                        $this->owner->PrivacyPolicyDescription, 
+                        'PrivacyPolicyDisclosure', 
+                        'Basic Privacy Policy Disclosure', 
+                        $this->owner->PrivacyPolicyDisclosure, 
                         'gdpr-basic'
                     )->setRows(4)
                     ->setDescription('A brief description of what you collect data. This will appear on all forms')

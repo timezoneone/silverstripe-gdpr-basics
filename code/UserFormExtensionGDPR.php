@@ -8,14 +8,14 @@ class UserFormExtensionGDPR extends Extension {
 
         if ($siteConfig->GDPRIsActive) {
 
-            if($siteConfig->PrivacyPolicyDescription || $siteConfig->PrivacyPolicyPage){
+            if($siteConfig->PrivacyPolicyDisclosure || $siteConfig->PrivacyPolicyPage){
 
-                $desc = $siteConfig->PrivacyPolicyDescription;
+                $desc = $siteConfig->PrivacyPolicyDisclosure;
                 $privacyPage = $siteConfig->PrivacyPolicyPage();
 
                 $html =  $desc ? $desc : '';
 
-                //if link is included in the description, we don't need to include it again...
+                //if link is included in the Disclosure, we don't need to include it again...
                 if($privacyPage && !strpos($desc, $privacyPage->Link())){
                     $html .= '<p><a href="'.$privacyPage->Link().'">'.$privacyPage->Title.'</a></p>';
                 }
