@@ -32,19 +32,22 @@ class DataControlFormController extends Page_Controller  {
 
         $formData = $request->postVars();
 
-        //array(5) { ["FirstName"]=> string(4) "Test" ["LastName"]=> string(4) "TEst" ["Email"]=> string(21) "david@timezoneone.com" ["SecurityID"]=> string(40) "7a05edc54b187530991c984ab12819be57a401e8" ["action_RequestData"]=> string(12) "Request Data" }
-
-        // array(5) { ["FirstName"]=> string(4) "Test" ["LastName"]=> string(4) "TEst" ["Email"]=> string(21) "david@timezoneone.com" ["SecurityID"]=> string(40) "7a05edc54b187530991c984ab12819be57a401e8" ["action_RemoveData"]=> string(11) "Remove Data" }
-
         if(empty($formData)){
 
            return $this->httpError(404);
 
         }else{
-
             //store record in Database.
-            //send verification email.
-            $UsersRequest = isset($formData->action_RemoveData) ? 'delete your data' : 'provide a copy of your data';
+            $record = new DataControlRequest();
+            $record->FirstName  = filter_var($formData['FirstName'], FILTER_SANITIZE_STRING);
+            $record->LastName   = filter_var($formData['LastName'], FILTER_SANITIZE_STRING);
+            $record->Email      = filter_var($formData['Email'], FILTER_SANITIZE_EMAIL);
+            $record->SecurityID = filter_var($formData['SecurityID'], FILTER_SANITIZE_STRING);
+            $record->RequiredAction  = isset($formData['action_RemoveData']) ? 'Delete Data' : 'Provide data';
+            $record->Status     = 'Awaiting Verification';
+            $record->write();
+
+            $UsersRequest = isset($formData['action_RemoveData']) ? 'delete your data' : 'provide a copy of your data';
 
             $Page = Page::create();
             $Page->ID = -1 * rand(1,10000000);
@@ -63,10 +66,6 @@ class DataControlFormController extends Page_Controller  {
 
     }
 
-    public function RequestData(){
-        var_dump('RequestData');
-    }
-
     public function DataRequestForm(){
         $form = new Form($this, 'request',
             new FieldList(
@@ -79,7 +78,7 @@ class DataControlFormController extends Page_Controller  {
                     ->setUseButtonTag(true)
                     ->setTitle('Request Data')
                     ->addExtraClass('button button-primary feature'),
-                FormAction::create('RemoveData', '\DELETE DATA')
+                FormAction::create('RemoveData', 'Delete Data')
                     ->setUseButtonTag(true)
                      ->setTitle('Remove Data')
                     ->addExtraClass('button')
