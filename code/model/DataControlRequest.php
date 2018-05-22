@@ -28,9 +28,15 @@ class DataControlRequest extends DataObject{
             $subject= 'Data Control Request Verification';
             $body = 'Hi ' . $this->FirstName ."\n". "\n";
             $body .= 'We have received a request to '.strtolower($this->RequiredAction).'. If you did not make this request, please ignore this email. Otherwise, please click the link below so that we can confirm your ownership of this email address and process your request'."\n". "\n";
+            //@TODO add verification link ?verification=SecurityID&request=ID
             $body .= ''; 
             $email = new Email($from, $to, $subject, $body);
             $email->sendPlain();
+        }
+
+        if($this->Status === 'Ready to action'){
+            //@TODO
+            //send confirmation to user and send notification to DataProtection Officer
         }
 
     }
