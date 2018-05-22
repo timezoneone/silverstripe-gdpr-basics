@@ -7,7 +7,9 @@
 
 class DeleteUserformSubmissionsTask extends BuildTask {
 
-    public $title = 'GDPR - Delete user form submission for given a time period.';
+    public $title = 'GDPR - Delete user form data';
+
+    public $description = 'Delete user form submissions older than the number of months selected in site settings.';
 
     public function run($request)
     {
