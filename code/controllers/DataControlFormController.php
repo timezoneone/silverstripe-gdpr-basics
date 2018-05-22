@@ -14,6 +14,14 @@ class DataControlFormController extends Page_Controller  {
 
     public function index(){
 
+        $config = SiteConfig::current_site_config();
+
+        if(!($config->GDPRIsActive && $config->DataControlFormsActive)){
+
+           return $this->httpError(404);
+
+       }
+
         $Page = Page::create();
         $Page->ID = -1 * rand(1,10000000);
         $controller = Page_Controller::create($Page);
@@ -31,9 +39,11 @@ class DataControlFormController extends Page_Controller  {
 
     public function verify($request){
 
+        $config = SiteConfig::current_site_config();
+
         $formData = $request->postVars();
 
-        if(empty($formData)){
+        if(empty($formData) || !($config->GDPRIsActive && $config->DataControlFormsActive)){
 
            return $this->httpError(404);
 
@@ -72,7 +82,7 @@ class DataControlFormController extends Page_Controller  {
 
         $data = $request->getVars();
 
-        if( empty($data) || !isset($data['verification']) || !isset($data['request']) ){
+        if( empty($data) || !isset($data['verification']) || !isset($data['request']) || !($config->GDPRIsActive && $config->DataControlFormsActive)){
 
            return $this->httpError(404);
 

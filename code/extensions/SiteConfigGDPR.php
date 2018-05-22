@@ -12,6 +12,7 @@ class SiteConfigGDPR extends DataExtension {
         'GTMCode' => 'Varchar(16)',
         'GACode' => 'Varchar(16)',
         'PrimaryColor' => 'Color',
+        'DataControlFormsActive' => 'Boolean(1)',
     );
 
     private static $has_one = array(
@@ -38,6 +39,8 @@ class SiteConfigGDPR extends DataExtension {
 
         $fields->addFieldsToTab('Root.GDPR', array(
             CheckboxField::create('GDPRIsActive','Is Active'),
+            CheckboxField::create('DataControlFormsActive','Use data control forms')
+                ->setDescription('Adds a form for users to make requests for their data. The form will appear at <a href="'.SiteConfigGDPR::siteURL().'/data-control" traget="_blank">'.SiteConfigGDPR::siteURL().'/data-control</a>. If active, include a link to this page in your privacy Policy'),
             DisplayLogicWrapper::create(array(
                 DropdownField::create(
                     'DataProtectionOfficerID', 
