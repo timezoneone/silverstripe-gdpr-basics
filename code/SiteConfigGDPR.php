@@ -18,7 +18,6 @@ class SiteConfigGDPR extends DataExtension {
         'CookiePolicyPage' => 'Page'
     );
 
-
     public function updateCMSFields(FieldList $fields) {
 
         $fields->addFieldToTab("Root", new Tab('GDPR'));
@@ -28,7 +27,6 @@ class SiteConfigGDPR extends DataExtension {
         }else{
             $CookiePolicyPageLink = '<a class="ss-ui-button cms-content-addpage-button tool-button font-icon-plus ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only cookie-policy-link" href="admin/pages/add/" role="button" aria-disabled="false"><span class="ui-button-text">Add new page</span></a>';
         }
-
 
         if($this->owner->PrivacyPolicyPage()->Exists()){
             $PrivacyPolicyPageLink = '<a class="policy-link" href="'.$this->owner->PrivacyPolicyPage()->Link().'" target="_blank">View Privacy Policy Page</a>';

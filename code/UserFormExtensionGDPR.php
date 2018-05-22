@@ -13,7 +13,7 @@ class UserFormExtensionGDPR extends Extension {
 
             if(!$formHasPolicy && $siteConfig->PrivacyPolicyDisclosure){
 
-                $fields->push(LiteralField::create('PrivacyMessage',$siteConfig->PrivacyPolicyDisclosure;));
+                $fields->push(LiteralField::create('PrivacyMessage',$siteConfig->PrivacyPolicyDisclosure));
 
             }
         }
