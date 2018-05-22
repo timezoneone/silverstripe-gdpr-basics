@@ -6,7 +6,8 @@
     "require": {
         "silverstripe/cms": "~3.0",
         "silverstripe/framework": "~3.0",
-        "silverstripe/display-logic": "1.5.*"
+        "silverstripe/display-logic": "1.5.*",
+        "tractorcow/silverstripe-colorpicker": "~3.0"
         },
     "extra": {
         "installer-name": "gdpr-basics"
