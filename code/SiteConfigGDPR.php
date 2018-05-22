@@ -19,18 +19,25 @@ class SiteConfigGDPR extends DataExtension {
         $fields->addFieldsToTab('Root.GDPR', array(
             CheckboxField::create('GDPRIsActive','Is Active'),
             DisplayLogicWrapper::create(
-                TextField::create('GTMCode','Google Tag Manager ID'),
-                TextField::create('GACode','Google Analytics ID')
-                    ->setDescription('Anonymized Google Analytics is used when visitor has not accepted cookies.'),
-                HTMLEditorField::create(
-                    'CookieConsentDescription', 
-                    'Cookie Consent Description', 
-                    $this->owner->CookieConsentDescription, 
-                    'gdpr-basic'
-                ),
-                TextField::create('CookieConsentAgreeButtonLabel'),
-                TextField::create('CookieConsentDeclineButtonLabel'),
-                ColorField::create('PrimaryColor')
+                array(
+                    TextField::create('GTMCode','Google Tag Manager ID')
+                        ->setDescription('Google Tag Manager is onlu used if user agrees to tracking cookies'),
+                    TextField::create('GACode','Google Analytics ID')
+                        ->setDescription('Anonymized Google Analytics is used when visitor has not accepted cookies.'),
+                    ToggleCompositeField::create('CookiePolicy','Cookie Policy', 
+                        array(
+                            HTMLEditorField::create(
+                                'CookieConsentDescription', 
+                                'Cookie Consent Description', 
+                                $this->owner->CookieConsentDescription, 
+                                'gdpr-basic'
+                            ),
+                            TextField::create('CookieConsentAgreeButtonLabel'),
+                            TextField::create('CookieConsentDeclineButtonLabel'),
+                            ColorField::create('PrimaryColor', 'Cookie Notice Color')
+                        )
+                    )
+                )
             )->displayIf('GDPRIsActive')->isChecked()->end()
         ));
 
