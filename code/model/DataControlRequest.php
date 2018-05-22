@@ -7,7 +7,7 @@ class DataControlRequest extends DataObject{
         'LastName' => 'Varchar(255)',
         'Email' => 'Varchar(255)',
         'Verification' => 'Varchar(255)',
-        'RequiredAction' => 'Enum("Provide data, Delete Data")',
+        'RequiredAction' => 'Enum("Provide Data, Delete Data")',
         'Status' => 'Enum("Awaiting Verification, Ready to action, In progress, Complete")',
         'DateRequested' => 'Date'
     );
@@ -38,8 +38,24 @@ class DataControlRequest extends DataObject{
         }
 
         if($this->Status === 'Ready to action'){
-            //@TODO
             //send confirmation to user and send notification to DataProtection Officer
+            $DPO = $config->DataProtectionOfficer();
+            $from = 'data-control@'.$_SERVER['HTTP_HOST']; 
+            $to = $DPO->Email;
+            $subject= 'Data Control Request: '.$this->RequiredAction;
+            $body = 'Hi ' . $DPO->FirstName ."\n"."\n";
+            $body .= 'You have received a request to '.strtolower($this->RequiredAction).' from '.$this->FirstName.' '.$this->LastName.' ('.$this->Email.')'."\n". "\n";
+
+            if($this->RequiredAction==='Provide Data'){
+                $body .= 'You must provide '.$this->FirstName.' '.$this->LastName.' with all of their personal data. You must provide this free of charge. This is not limited to just the data collect via forms on the website, but also includes any data that may be stored by third-parties on your behalf (for example, in a CRM or email list management system).';
+            }
+
+            if($this->RequiredAction==='Delete Data'){
+                $body .= 'You must remove all personal data that you have for '.$this->FirstName.' '.$this->LastName.'. Please let '.$this->FirstName.' know when this has been completed. This is not limited to just the data collect via forms on the website, but also includes any data that may be stored by third-parties on your behalf (for example, in a CRM or email list management system).';
+            }
+
+            $email = new Email($from, $to, $subject, $body);
+            $email->sendPlain();
         }
 
     }
