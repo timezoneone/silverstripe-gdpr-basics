@@ -2,8 +2,10 @@
     max-width: 700px;
 }
 
-#Form_EditForm_GDPRIsActive_Holder {
+#Form_EditForm_GDPRIsActive_Holder,
+#Form_EditForm_DataControlFormsActive_Holder {
     padding-left: 0;
+    max-width: 700px;
 }
 
 #Root_GDPR .policy-link {
