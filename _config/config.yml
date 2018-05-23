@@ -13,3 +13,7 @@ SiteConfig:
 LeftAndMain:
   extra_requirements_css:
     - gdpr-basics/admin.css
+
+UserForm:
+  extensions:
+    - UserFormExtensionGDPR
