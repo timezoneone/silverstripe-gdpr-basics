@@ -81,7 +81,8 @@ class DataControlFormController extends Page_Controller  {
     public function confirm($request){
 
         $data = $request->getVars();
-
+        $config = SiteConfig::current_site_config();
+        
         if( empty($data) || !isset($data['verification']) || !isset($data['request']) || !($config->GDPRIsActive && $config->DataControlFormsActive)){
 
            return $this->httpError(404);
