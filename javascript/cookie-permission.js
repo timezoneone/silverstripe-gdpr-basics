@@ -30,14 +30,6 @@ function getCookie(cname){
     return "";
 }
 
-var deleteCookies = function(){
-    var pairs = document.cookie.split(";");
-    for (var i=0; i<pairs.length; i++){
-        var pair = pairs[i].split("=");
-        document.cookie = pair[0] + "=''; expires=-1;path=/;domain="+window.BaseHref;
-    }
-}
-
 function SetCookie(name,value,days) {
     var today = new Date();
     var expire = new Date();
@@ -113,8 +105,7 @@ function getCookieConsent(){
                 document.fireEvent("on" + event.eventType, CookieConsentDenied);
             }
         }
-        //delete existing cookies...
-        deleteCookies();
+
         SetCookie('cookieConsent','false',365,'');
         declineButton.innerHTML = 'You got it!';
         setTimeout(function(){
