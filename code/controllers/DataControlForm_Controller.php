@@ -1,13 +1,12 @@
 <?php
 
-class DataControlFormController extends Page_Controller  {
+class DataControlForm_Controller extends Page_Controller  {
 
     public function init() {
         parent::init();
     }
 
     private static $allowed_actions = array(
-        'index',
         'verify',
         'confirm'
     );
@@ -17,23 +16,14 @@ class DataControlFormController extends Page_Controller  {
         $config = SiteConfig::current_site_config();
 
         if(!($config->GDPRIsActive && $config->DataControlFormsActive)){
-
            return $this->httpError(404);
-
-       }
-
-        $Page = Page::create();
-        $Page->ID = -1 * rand(1,10000000);
-        $controller = Page_Controller::create($Page);
-        $controller->init();
-
-        $Page = $controller->customise(array(
-            'Title' => 'Data Control',
-            'Content' => DBField::create_field('HTMLText', '<p>Use the form below to submit a request for a copy of your data or to have your data removed.</p>'),
-            'Form' => $this->DataRequestForm()
-        ));
-
-        return $Page->renderWith('Page');
+        }else{
+            return $this->customise(array(
+                'Title' => 'Data Control',
+                'Content' => DBField::create_field('HTMLText', '<p>Use the form below to submit a request for a copy of your data or to have your data removed.</p>'),
+                'Form' => $this->DataRequestForm()
+            ))->renderWith('Page');
+        }
 
     }
 
@@ -60,19 +50,13 @@ class DataControlFormController extends Page_Controller  {
 
             $UsersRequest = isset($formData['action_RemoveData']) ? 'delete your data' : 'provide a copy of your data';
 
-            $Page = Page::create();
-            $Page->ID = -1 * rand(1,10000000);
-            $controller = Page_Controller::create($Page);
-            $controller->init();
             $config = SiteConfig::current_site_config();
             $dataProtectionOfficer = $config->DataProtectionOfficer();
 
-            $Page = $controller->customise(array(
+            return $this->customise(array(
                 'Title' => 'Confirm ownership',
                 'Content' => DBField::create_field('HTMLText', '<p>Before we can action your request to '.$UsersRequest.', we need to verify that you are the owner of this email address. Please click the verification link in the email we\'ve sent you.</p><p>If you have any trouble, please contact our <a href="mailto:'.$dataProtectionOfficer->Email.'">Data Protection Officer, '. $dataProtectionOfficer->FirstName.' '. $dataProtectionOfficer->LastName.'</a>')
-            ));
-
-            return $Page->renderWith('Page');
+            ))->renderWith('Page');
 
         }
 
@@ -97,24 +81,19 @@ class DataControlFormController extends Page_Controller  {
 
             if($record->Exists()){
                 //update record in Database.
-                $record->Status     = 'Ready to action';
+                $record->Status = 'Ready to action';
                 $record->write();
             }
 
             $UsersRequest = isset($formData['action_RemoveData']) ? 'delete your data' : 'provide a copy of your data';
-            $Page = Page::create();
-            $Page->ID = -1 * rand(1,10000000);
-            $controller = Page_Controller::create($Page);
-            $controller->init();
+
             $config = SiteConfig::current_site_config();
             $dataProtectionOfficer = $config->DataProtectionOfficer();
 
-            $Page = $controller->customise(array(
+            return $this->customise(array(
                 'Title' => 'Request Received',
                 'Content' => DBField::create_field('HTMLText', '<p>Thank you. Your request to '.$UsersRequest.' has been received. Our <a href="mailto:'.$dataProtectionOfficer->Email.'">Data Protection Officer</a> will be in touch.</p>')
-            ));
-
-            return $Page->renderWith('Page');
+            ))->renderWith('Page');
 
         }
 
