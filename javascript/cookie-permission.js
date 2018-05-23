@@ -122,9 +122,12 @@ waitForAllTheThings(getCookieConsent);
 
 document.addEventListener('CookieConsentGranted', function(){
     document.body.classList.add('CookieConsentGranted');
+    document.body.classList.remove('CookieConsentDenied');
+
 });
 document.addEventListener('CookieConsentDenied', function(){
     document.body.classList.add('CookieConsentDenied');
+    document.body.classList.remove('CookieConsentGranted');
 });
 
 
