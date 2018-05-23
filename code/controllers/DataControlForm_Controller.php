@@ -76,19 +76,24 @@ class DataControlForm_Controller extends Page_Controller  {
             $Verification = filter_var($data['verification'], FILTER_SANITIZE_SPECIAL_CHARS);
             $ID = filter_var($data['request'], FILTER_SANITIZE_SPECIAL_CHARS);
 
-            //look up record in database..
-            $record = DataControlRequest::get()->filter(array('Verification'=>$Verification, 'ID'=> $ID))->First();
-
-            if($record->Exists()){
-                //update record in Database.
-                $record->Status = 'Ready to action';
-                $record->write();
-            }
-
             $UsersRequest = isset($formData['action_RemoveData']) ? 'delete your data' : 'provide a copy of your data';
 
             $config = SiteConfig::current_site_config();
             $dataProtectionOfficer = $config->DataProtectionOfficer();
+
+            //look up record in database..
+            $record = DataControlRequest::get()->filter(array('Verification'=>$Verification, 'ID'=> $ID))->First();
+
+            if(!$record){
+                return $this->customise(array(
+                                'Title' => 'Sorry, we couldn\'t find your original request.',
+                                'Content' => DBField::create_field('HTMLText', '<p>Please sumbit a new request <a href="/data-control">here</a> or contact our <a href="mailto:'.$dataProtectionOfficer->Email.'">Data Protection Officer</a>.</p>')
+                            ))->renderWith('Page');
+            }else if($record->Exists()){
+                    //update record in Database.
+                    $record->Status = 'Ready to action';
+                    $record->write();
+            }
 
             return $this->customise(array(
                 'Title' => 'Request Received',
