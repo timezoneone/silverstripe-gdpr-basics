@@ -98,7 +98,7 @@ function getCookieConsent(){
     declineButton.addEventListener('click', function(e){
         e.preventDefault();
         //if permission wan't already denied, fire the 'CookieConsentDenied' event...
-        if(!checkCookieConsent()){
+        if(checkCookieConsent()){
             if (document.createEvent) {
                 document.dispatchEvent(CookieConsentDenied);
             } else {
