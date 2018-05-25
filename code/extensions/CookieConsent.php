@@ -74,4 +74,8 @@ class CookieConsent extends Extension {
         }
     }
 
+    public function GDPR(){
+        return SiteConfigGDPR::is_enable_for_request();
+    }
+
 }
