@@ -57,20 +57,21 @@ function getCookieConsent(){
 
     if(window.cookieConsent == ''){
         permissionPrompt.classList.add('open');
-    }else{
-        var eventToFire;
-        if(checkCookieConsent()){
-            eventToFire = CookieConsentGranted;
-        }else{
-            eventToFire = CookieConsentDenied;
-        }
-
-        if (document.createEvent) {
-            document.dispatchEvent(eventToFire);
-        } else {
-            document.fireEvent("on" + event.eventType, eventToFire);
-        }
     }
+
+    var eventToFire;
+    if(checkCookieConsent()){
+        eventToFire = CookieConsentGranted;
+    }else{
+        eventToFire = CookieConsentDenied;
+    }
+
+    if (document.createEvent) {
+        document.dispatchEvent(eventToFire);
+    } else {
+        document.fireEvent("on" + event.eventType, eventToFire);
+    }
+    
 
     //if user clicks agrees set a cookieConsent cookie 
     // set cookie to read "granted"...
