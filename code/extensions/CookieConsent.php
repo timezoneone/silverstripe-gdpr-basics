@@ -7,7 +7,7 @@ class CookieConsent extends Extension {
     }
 
     public function onAfterInit(){
-        if ($this->siteConfig->GDPRIsActive) {
+        if (SiteConfigGDPR::is_enable_for_request()) {
 
             $cookieConsentPrompt = new ArrayData([
                 'DomainName'=> $_SERVER['HTTP_HOST'],

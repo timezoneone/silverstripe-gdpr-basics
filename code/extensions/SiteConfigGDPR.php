@@ -1,5 +1,7 @@
 <?php
 
+
+
 class SiteConfigGDPR extends DataExtension {
 
     private static $db = array(
@@ -20,6 +22,11 @@ class SiteConfigGDPR extends DataExtension {
         'CookiePolicyPage' => 'Page',
         'DataProtectionOfficer' => 'Member'
     );
+
+    // Two letter continents EU, AS, OC
+    private static $restrict_to_continents = array();
+
+    private static $geo_lite_db = 'assets/GeoLite2-City.mmdb';
 
     public function updateCMSFields(FieldList $fields) {
 
@@ -110,4 +117,29 @@ class SiteConfigGDPR extends DataExtension {
         $domainName = $_SERVER['HTTP_HOST'].'/';
         return $protocol.$domainName;
     }
+
+    public static function is_enable_for_request()
+    {
+        if(SiteConfig::current_site_config()->GDPRIsActive) {
+            $continents = Config::inst()->get('SiteConfigGDPR', 'restrict_to_continents');
+            if(!empty($continents)) {
+                $controller = Controller::has_curr() ? Controller::curr() : null;
+                $db = BASE_PATH . DIRECTORY_SEPARATOR . Config::inst()->get('SiteConfigGDPR', 'geo_lite_db');
+                if($controller && file_exists($db)) {
+                    $ip = $controller->getRequest()->getIP();
+                    $reader = new \MaxMind\Db\Reader($db);
+                    $record = $reader->get($ip);
+                    if($record && is_array($record) && isset($record['continent'])) {
+                        return in_array($record['continent']['code'], $continents);
+                    }
+                }
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+       return false;
+    }
+
 }
