@@ -18,8 +18,6 @@ class GDPRDynamicCachesExtension extends DataExtension
 				DB::connect($databaseConfig);
 			}
 		}
-
-
 		$fragments['is_gdpr'] = SiteConfigGDPR::is_enable_for_request() ? 'YES' : 'NO';
 	}
 
