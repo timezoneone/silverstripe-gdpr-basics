@@ -11,9 +11,9 @@ class CookieConsent extends Extension {
 
             $cookieConsentPrompt = new ArrayData([
                 'DomainName'=> $_SERVER['HTTP_HOST'],
-                'CookieConsentDescription' => $this->siteConfig->CookieConsentDescription ? $this->siteConfig->CookieConsentDescription : 'This website uses cookies',
-                'CookieConsentAgreeButtonLabel' => $this->siteConfig->CookieConsentAgreeButtonLabel ? $this->siteConfig->CookieConsentAgreeButtonLabel : 'Accept',
-                'CookieConsentDeclineButtonLabel' => $this->siteConfig->CookieConsentDeclineButtonLabel ? $this->siteConfig->CookieConsentDeclineButtonLabel : 'Decline'
+                'CookieConsentDescription' => $this->siteConfig->CookieConsentDescription ? addslashes($this->siteConfig->CookieConsentDescription) : 'This website uses cookies',
+                'CookieConsentAgreeButtonLabel' => $this->siteConfig->CookieConsentAgreeButtonLabel ? addslashes($this->siteConfig->CookieConsentAgreeButtonLabel) : 'Accept',
+                'CookieConsentDeclineButtonLabel' => $this->siteConfig->CookieConsentDeclineButtonLabel ? addslashes($this->siteConfig->CookieConsentDeclineButtonLabel) : 'Decline'
             ]);
 
             Requirements::insertHeadTags(
