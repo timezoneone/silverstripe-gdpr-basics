@@ -83,7 +83,7 @@ class SiteConfigGDPR extends DataExtension {
                     HTMLEditorField::create(
                         'CookieConsentDescription', 
                         'Cookie Consent Description', 
-                        addslashes($this->owner->CookieConsentDescription), 
+                        $this->owner->CookieConsentDescription, 
                         'gdpr-basic'
                     )->setRows(4)
                     ->setDescription('A brief description of what you use cookies. Don\'t forget to include a link to your full cookie policy.'),
@@ -103,7 +103,7 @@ class SiteConfigGDPR extends DataExtension {
                     HTMLEditorField::create(
                         'PrivacyPolicyDisclosure', 
                         'Basic Privacy Policy Disclosure', 
-                        addslashes($this->owner->PrivacyPolicyDisclosure), 
+                        $this->owner->PrivacyPolicyDisclosure, 
                         'gdpr-basic'
                     )->setRows(4)
                     ->setDescription('A brief description of why you collect data. This will appear on all forms. Don\'t forget to include a link to your full privacy policy.')
