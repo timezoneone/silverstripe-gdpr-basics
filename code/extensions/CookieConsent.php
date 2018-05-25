@@ -18,6 +18,7 @@ class CookieConsent extends Extension {
 
             Requirements::insertHeadTags(
                 '<script>
+                    var gaHasFired = false;
                     function waitForAllTheThings(fn) { 
                         if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
                             fn();
@@ -32,11 +33,14 @@ class CookieConsent extends Extension {
                 Requirements::insertHeadTags(
                     "<script>
                     document.addEventListener('CookieConsentGranted', function(){
-                        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                        })(window,document,'script','dataLayer','" . $this->siteConfig->GTMCode . "');
+                        if(!gaHasFired){
+                            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                            })(window,document,'script','dataLayer','" . $this->siteConfig->GTMCode . "');
+                            gaHasFired = true;
+                        }
                     });
                     </script>"
                 );
@@ -46,16 +50,19 @@ class CookieConsent extends Extension {
                 Requirements::insertHeadTags(
                     "<script>
                     document.addEventListener('CookieConsentDenied', function(){
-                        var head = document.head;
-                        var script = document.createElement('script');
-                        script.type = 'text/javascript';
-                        script.src = 'https://www.googletagmanager.com/gtag/js?id=".$this->siteConfig->GACode."';
-                        head.appendChild(script);
+                        if(!gaHasFired){
+                            var head = document.head;
+                            var script = document.createElement('script');
+                            script.type = 'text/javascript';
+                            script.src = 'https://www.googletagmanager.com/gtag/js?id=".$this->siteConfig->GACode."';
+                            head.appendChild(script);
 
-                        window.dataLayer = window.dataLayer || [];
-                        function gtag(){dataLayer.push(arguments);}
-                        gtag('js', new Date());
-                        gtag('config', '".$this->siteConfig->GACode."', { 'anonymize_ip': true });
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', '".$this->siteConfig->GACode."', { 'anonymize_ip': true });
+                            gaHasFired = true;
+                        }
                     });
                     </script>"
                 );
