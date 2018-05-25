@@ -23,6 +23,8 @@ class SiteConfigGDPR extends DataExtension {
         'DataProtectionOfficer' => 'Member'
     );
 
+    private static $enabled_cache = null;
+
     // Two letter continents EU, AS, OC
     private static $restrict_to_continents = array();
 
@@ -120,26 +122,32 @@ class SiteConfigGDPR extends DataExtension {
 
     public static function is_enable_for_request()
     {
+        if(!is_null(self::$enabled_cache)) {
+            return self::$enabled_cache;
+        }
+
+        self::$enabled_cache = false;
         if(SiteConfig::current_site_config()->GDPRIsActive) {
+            self::$enabled_cache = true;
             $continents = Config::inst()->get('SiteConfigGDPR', 'restrict_to_continents');
             if(!empty($continents)) {
+                self::$enabled_cache = false;
                 $controller = Controller::has_curr() ? Controller::curr() : null;
                 $db = BASE_PATH . DIRECTORY_SEPARATOR . Config::inst()->get('SiteConfigGDPR', 'geo_lite_db');
                 if($controller && file_exists($db)) {
                     $ip = $controller->getRequest()->getIP();
+
+                    $ip = '138.68.129.79'; // uk
+
                     $reader = new \MaxMind\Db\Reader($db);
                     $record = $reader->get($ip);
                     if($record && is_array($record) && isset($record['continent'])) {
-                        return in_array($record['continent']['code'], $continents);
+                        self::$enabled_cache = in_array($record['continent']['code'], $continents);
                     }
                 }
-                return false;
-            }
-            else {
-                return true;
             }
         }
-       return false;
+        return self::$enabled_cache;
     }
 
 }
