@@ -123,7 +123,9 @@ class SiteConfigGDPR extends DataExtension {
     private static function get_ip()
     {
         $ip = null;
-        if (isset($_SERVER['HTTP_CLIENT_IP']))
+        if (isset($_SERVER['HTTP_CF_CONNECTING_IP']))
+            $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+        else if (isset($_SERVER['HTTP_CLIENT_IP']))
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -155,11 +157,13 @@ class SiteConfigGDPR extends DataExtension {
                 if(file_exists($db)) {
                     $ip = self::get_ip();
                     if($ip) {
-                        $reader = new \MaxMind\Db\Reader($db);
-                        $record = $reader->get($ip);
-                        if ($record && is_array($record) && isset($record['continent'])) {
-                            self::$enabled_cache = in_array($record['continent']['code'], $continents);
-                        }
+                        try {
+                            $reader = new \MaxMind\Db\Reader($db);
+                            $record = $reader->get($ip);
+                            if ($record && is_array($record) && isset($record['continent'])) {
+                                self::$enabled_cache = in_array($record['continent']['code'], $continents);
+                            }
+                        } catch(Exception $e) { }
                     }
                 }
             }
