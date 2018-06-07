@@ -44,6 +44,7 @@ class DataControlForm_Controller extends Page_Controller  {
             $record->LastName   = filter_var($formData['LastName'], FILTER_SANITIZE_STRING);
             $record->Email      = filter_var($formData['Email'], FILTER_SANITIZE_EMAIL);
             $record->Verification = filter_var($formData['SecurityID'], FILTER_SANITIZE_STRING);
+            $record->IsEUResident  = (bool)$formData['IsEUResident'];
             $record->RequiredAction  = isset($formData['action_RemoveData']) ? 'Delete Data' : 'Provide data';
             $record->Status     = 'Awaiting Verification';
             $record->write();
@@ -105,11 +106,19 @@ class DataControlForm_Controller extends Page_Controller  {
     }
 
     public function DataRequestForm(){
+
+        if(SiteConfigGDPR::is_enable_for_request()){
+            $checkbox = HiddenField::create('IsEUResident')->setValue(1);
+        }else{
+            $checkbox = CheckboxField::create('IsEUResident', 'I am an EU resident');
+        }
+
         $form = new Form($this, 'request',
             new FieldList(
                 TextField::create('FirstName', 'First Name'),
                 TextField::create('LastName', 'Last Name'),
-                EmailField::create('Email', 'Email')
+                EmailField::create('Email', 'Email'),
+                $checkbox
             ),
             new FieldList(
                 FormAction::create('RequestData', 'Provide data')
