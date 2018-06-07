@@ -15,7 +15,7 @@ class DataControlForm_Controller extends Page_Controller  {
 
         $config = SiteConfig::current_site_config();
 
-        if(!$config->DataControlFormsActive){
+        if(!(SiteConfigGDPR::is_enable_for_request() && $config->DataControlFormsActive)){
            return $this->httpError(404);
         }else{
             return $this->customise(array(
@@ -33,7 +33,7 @@ class DataControlForm_Controller extends Page_Controller  {
 
         $formData = $request->postVars();
 
-        if(empty($formData) || !$config->DataControlFormsActive){
+        if(empty($formData) || !(SiteConfigGDPR::is_enable_for_request() && $config->DataControlFormsActive)){
 
            return $this->httpError(404);
 
@@ -67,7 +67,8 @@ class DataControlForm_Controller extends Page_Controller  {
         $data = $request->getVars();
         $config = SiteConfig::current_site_config();
         
-        if( empty($data) || !isset($data['verification']) || !isset($data['request']) || !$config->DataControlFormsActive){
+        if( empty($data) || !isset($data['verification']) || !isset($data['request'])
+            || !(SiteConfigGDPR::is_enable_for_request() && $config->DataControlFormsActive)){
 
            return $this->httpError(404);
 
