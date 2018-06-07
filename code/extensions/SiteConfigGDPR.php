@@ -157,11 +157,13 @@ class SiteConfigGDPR extends DataExtension {
                 if(file_exists($db)) {
                     $ip = self::get_ip();
                     if($ip) {
-                        $reader = new \MaxMind\Db\Reader($db);
-                        $record = $reader->get($ip);
-                        if ($record && is_array($record) && isset($record['continent'])) {
-                            self::$enabled_cache = in_array($record['continent']['code'], $continents);
-                        }
+                        try {
+                            $reader = new \MaxMind\Db\Reader($db);
+                            $record = $reader->get($ip);
+                            if ($record && is_array($record) && isset($record['continent'])) {
+                                self::$enabled_cache = in_array($record['continent']['code'], $continents);
+                            }
+                        } catch(Exception $e) { }
                     }
                 }
             }
