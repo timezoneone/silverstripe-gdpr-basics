@@ -123,6 +123,8 @@ class SiteConfigGDPR extends DataExtension {
     private static function get_ip()
     {
         $ip = null;
+        if (isset($_SERVER['HTTP_CF_CONNECTING_IP']))
+            $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
         if (isset($_SERVER['HTTP_CLIENT_IP']))
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
