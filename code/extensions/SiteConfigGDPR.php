@@ -125,7 +125,7 @@ class SiteConfigGDPR extends DataExtension {
         $ip = null;
         if (isset($_SERVER['HTTP_CF_CONNECTING_IP']))
             $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
-        if (isset($_SERVER['HTTP_CLIENT_IP']))
+        else if (isset($_SERVER['HTTP_CLIENT_IP']))
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
