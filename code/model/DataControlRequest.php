@@ -9,10 +9,11 @@ class DataControlRequest extends DataObject{
         'Verification' => 'Varchar(255)',
         'RequiredAction' => 'Enum("Provide Data, Delete Data")',
         'Status' => 'Enum("Awaiting Verification, Ready to action, In progress, Complete")',
-        'DateRequested' => 'Date'
+        'DateRequested' => 'Date',
+        'IsEUResident' => 'Boolean'
     );
 
-    private static $summary_fields = array('FirstName','LastName','Email','RequiredAction','Status');
+    private static $summary_fields = array('FirstName','LastName','Email','RequiredAction','Status','DateRequested','IsEUResident');
 
     public function getCMSFields() {
         $fields = parent::getCMSFields();
@@ -45,6 +46,10 @@ class DataControlRequest extends DataObject{
             $subject= 'Data Control Request: '.$this->RequiredAction;
             $body = 'Hi ' . $DPO->FirstName ."\n"."\n";
             $body .= 'You have received a request to '.strtolower($this->RequiredAction).' from '.$this->FirstName.' '.$this->LastName.' ('.$this->Email.')'."\n". "\n";
+
+            if($this->IsEUResident){
+                $body .= $this->FirstName.' '.$this->LastName. ' is an EU resident'."\n". "\n";
+            }
 
             if($this->RequiredAction==='Provide Data'){
                 $body .= 'You must provide '.$this->FirstName.' '.$this->LastName.' with all of their personal data. You must provide this free of charge. This is not limited to just the data collect via forms on the website, but also includes any data that may be stored by third-parties on your behalf (for example, in a CRM or email list management system).';

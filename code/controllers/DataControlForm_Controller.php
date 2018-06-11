@@ -15,7 +15,7 @@ class DataControlForm_Controller extends Page_Controller  {
 
         $config = SiteConfig::current_site_config();
 
-        if(!(SiteConfigGDPR::is_enable_for_request() && $config->DataControlFormsActive)){
+        if(!$config->DataControlFormsActive){
            return $this->httpError(404);
         }else{
             return $this->customise(array(
@@ -33,7 +33,7 @@ class DataControlForm_Controller extends Page_Controller  {
 
         $formData = $request->postVars();
 
-        if(empty($formData) || !(SiteConfigGDPR::is_enable_for_request() && $config->DataControlFormsActive)){
+        if(empty($formData) || !$config->DataControlFormsActive){
 
            return $this->httpError(404);
 
@@ -44,6 +44,7 @@ class DataControlForm_Controller extends Page_Controller  {
             $record->LastName   = filter_var($formData['LastName'], FILTER_SANITIZE_STRING);
             $record->Email      = filter_var($formData['Email'], FILTER_SANITIZE_EMAIL);
             $record->Verification = filter_var($formData['SecurityID'], FILTER_SANITIZE_STRING);
+            $record->IsEUResident  = (bool)$formData['IsEUResident'];
             $record->RequiredAction  = isset($formData['action_RemoveData']) ? 'Delete Data' : 'Provide data';
             $record->Status     = 'Awaiting Verification';
             $record->write();
@@ -67,8 +68,7 @@ class DataControlForm_Controller extends Page_Controller  {
         $data = $request->getVars();
         $config = SiteConfig::current_site_config();
         
-        if( empty($data) || !isset($data['verification']) || !isset($data['request'])
-            || !(SiteConfigGDPR::is_enable_for_request() && $config->DataControlFormsActive)){
+        if( empty($data) || !isset($data['verification']) || !isset($data['request']) || !$config->DataControlFormsActive){
 
            return $this->httpError(404);
 
@@ -106,11 +106,19 @@ class DataControlForm_Controller extends Page_Controller  {
     }
 
     public function DataRequestForm(){
+
+        if(SiteConfigGDPR::is_enable_for_request()){
+            $checkbox = HiddenField::create('IsEUResident')->setValue(1);
+        }else{
+            $checkbox = CheckboxField::create('IsEUResident', 'I am an EU resident');
+        }
+
         $form = new Form($this, 'request',
             new FieldList(
                 TextField::create('FirstName', 'First Name'),
                 TextField::create('LastName', 'Last Name'),
-                EmailField::create('Email', 'Email')
+                EmailField::create('Email', 'Email'),
+                $checkbox
             ),
             new FieldList(
                 FormAction::create('RequestData', 'Provide data')
