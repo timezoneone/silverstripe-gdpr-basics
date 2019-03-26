@@ -9,4 +9,4 @@ window.cookieConsentPrompt = '<div id="cookie-consent">' +
         '</a>' +
     '</div>' +
 '</div>' +
-'<a id="gotCookies" href="#" onclick="document.getElementById(\\'cookie-consent\\').classList.toggle(\\'open\\'); return false;"><img src="gdpr-basics/images/cookie.svg" height="35px" width="35px" alt="" /></a>';
+'<a id="gotCookies" href="#" onclick="document.getElementById(\\'cookie-consent\\').classList.toggle(\\'open\\'); return false;"><img src="resources/vendor/timezoneone/silverstripe-gdpr-basics/client/images/cookie.svg" height="35px" width="35px" alt="" /></a>';
