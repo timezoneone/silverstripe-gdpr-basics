@@ -15,16 +15,8 @@ class DataControlRequestAdmin extends ModelAdmin
 
     private static $menu_priority = -100;
 
-    private static $managed_models = array(
+    private static $managed_models = [
     	DataControlRequest::class
-    );
-
-    public function getEditForm($id = null, $fields = null) {
-        $form = parent::getEditForm($id, $fields);
-        if($this->modelClass == DataControlRequest::class){
-            $gridField = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
-        }
-        return $form;
-    }
+    ];
 
 }

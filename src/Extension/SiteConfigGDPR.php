@@ -4,13 +4,28 @@ namespace TimeZoneOne\GDPR\Extension;
 
 
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldGroup;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\Tab;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Security\Member;
+use SilverStripe\SiteConfig\SiteConfig;
+use TractorCow\Colorpicker\Forms\ColorField;
+use UncleCheese\DisplayLogic\Forms\Wrapper;
 
 class SiteConfigGDPR extends DataExtension
 {
 
-    private static $db = array(
+    use Configurable;
+
+    private static $db = [
         'GDPRIsActive' => 'Boolean',
         'DeleteUserformSubmissionsAfter' => 'Enum("none, 1, 2, 3, 6, 12, 24, 36")', // months
         'CookieConsentDescription' => 'HTMLText',
@@ -21,13 +36,13 @@ class SiteConfigGDPR extends DataExtension
         'GACode' => 'Varchar(16)',
         'PrimaryColor' => 'Color',
         'DataControlFormsActive' => 'Boolean(1)',
-    );
+    ];
 
-    private static $has_one = array(
+    private static $has_one = [
         'PrivacyPolicyPage' => SiteTree::class,
         'CookiePolicyPage' => SiteTree::class,
         'DataProtectionOfficer' => Member::class
-    );
+    ];
 
     private static $enabled_cache = null;
 
@@ -36,10 +51,10 @@ class SiteConfigGDPR extends DataExtension
 
     private static $geo_lite_db = 'assets/GeoLite2-City.mmdb';
 
-    public function updateCMSFields(FieldList $fields) {
+    public function updateCMSFields(FieldList $fields)
+    {
 
         $fields->addFieldToTab("Root", new Tab('GDPR'));
-
         if($this->owner->CookiePolicyPage()->Exists()){
             $CookiePolicyPageLink = '<a class="policy-link" href="'.$this->owner->CookiePolicyPage()->Link().'" target="_blank">View Cookie Policy Page</a>';
         }else{
@@ -55,8 +70,8 @@ class SiteConfigGDPR extends DataExtension
         $fields->addFieldsToTab('Root.GDPR', array(
             CheckboxField::create('GDPRIsActive','Is Active'),
             CheckboxField::create('DataControlFormsActive','Use data control forms')
-                ->setDescription('Adds a form for users to make requests for their data. The form will appear at <a href="'.SiteConfigGDPR::siteURL().'/data-control" traget="_blank">'.SiteConfigGDPR::siteURL().'/data-control</a>. If active, include a link to this page in your privacy Policy'),
-            DisplayLogicWrapper::create(array(
+                ->setDescription('Adds a form for users to make requests for their data. The form will appear at <a href="'.SiteConfigGDPR::siteURL().'data-control" traget="_blank">'.SiteConfigGDPR::siteURL().'/data-control</a>. If active, include a link to this page in your privacy Policy'),
+            Wrapper::create(array(
                 DropdownField::create(
                     'DataProtectionOfficerID', 
                     'Data Protection Officer', 
@@ -84,7 +99,10 @@ class SiteConfigGDPR extends DataExtension
                         DropdownField::create(
                             'CookiePolicyPageID', 
                             'Cookie Policy Page', 
-                            SiteTree::get()->exclude(array('ClassName'=>'BlogPost', 'ClassName'=>'TOPage'))->map('ID', 'Title')
+                            SiteTree::get()->exclude([
+                                'ClassName' => 'SilverStripe\\Blog\\Model\\BlogPost',
+                                'ClassName' => 'TimeZoneOne\\TomClient\\Page\\ListPage'
+                            ])->map('ID', 'Title')
                             )->setEmptyString(''),
                         LiteralField::create('CookiePolicyPageLink',$CookiePolicyPageLink)
                     )),
@@ -156,10 +174,10 @@ class SiteConfigGDPR extends DataExtension
         self::$enabled_cache = false;
         if(SiteConfig::current_site_config()->GDPRIsActive) {
             self::$enabled_cache = true;
-            $continents = Config::inst()->get('SiteConfigGDPR', 'restrict_to_continents');
+            $continents = SiteConfigGDPR::config()->get('restrict_to_continents');
             if(!empty($continents)) {
                 self::$enabled_cache = false;
-                $db = BASE_PATH . DIRECTORY_SEPARATOR . Config::inst()->get('SiteConfigGDPR', 'geo_lite_db');
+                $db = BASE_PATH . DIRECTORY_SEPARATOR . SiteConfigGDPR::config()->get('geo_lite_db');
                 if(file_exists($db)) {
                     $ip = self::get_ip();
                     if($ip) {

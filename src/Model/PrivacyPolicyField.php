@@ -15,4 +15,6 @@ class PrivacyPolicyField extends EditableLiteralField {
 
     private static $plural_name = 'Privacy Policy Disclosure';
 
+    private static $table_name = 'PrivacyPolicyField';
+
 }

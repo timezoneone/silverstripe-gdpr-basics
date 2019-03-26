@@ -5,7 +5,7 @@ PageController:
   extensions:
     - TimeZoneOne\GDPR\Extension\CookieConsent
 
-SiteConfig:
+SilverStripe\SiteConfig\SiteConfig:
   extensions:
     - TimeZoneOne\GDPR\Extension\SiteConfigGDPR
 
@@ -13,6 +13,6 @@ LeftAndMain:
   extra_requirements_css:
     - gdpr-basics/admin.css
 
-UserForm:
+SilverStripe\UserForms\Form\UserForm:
   extensions:
     - TimeZoneOne\GDPR\Extension\UserFormExtensionGDPR

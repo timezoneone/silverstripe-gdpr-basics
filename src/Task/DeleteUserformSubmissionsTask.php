@@ -5,6 +5,7 @@ namespace TimeZoneOne\GDPR\Task;
 
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\UserForms\Model\Submission\SubmittedForm;
 
 
 class DeleteUserformSubmissionsTask extends BuildTask
@@ -27,9 +28,6 @@ class DeleteUserformSubmissionsTask extends BuildTask
             $submissionsToBeDeleted = SubmittedForm::get()->filter('Created:LessThan', $dtForSelectedValue);
             if ($countToBeDeleted = $submissionsToBeDeleted->count()) {
                 foreach ($submissionsToBeDeleted as $submission) {
-                    foreach ($submission->Values() as $value) {
-                        $value->delete();
-                    }
                     $submission->delete();
                 }
                 echo '<h3>Deleted '.$countToBeDeleted.' submission(s)</h3>';
