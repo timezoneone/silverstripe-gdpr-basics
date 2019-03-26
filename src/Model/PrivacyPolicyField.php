@@ -1,7 +1,13 @@
 <?php
 
-
 namespace TimeZoneOne\GDPR\Model;
+
+use SilverStripe\UserForms\Model\EditableFormField\EditableLiteralField;
+
+
+if(!class_exists(EditableLiteralField::class)) {
+    return false;
+}
 
 class PrivacyPolicyField extends EditableLiteralField {
 

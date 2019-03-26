@@ -3,7 +3,12 @@
 
 namespace TimeZoneOne\GDPR\Task;
 
-class DeleteUserformSubmissionsTask extends BuildTask {
+use SilverStripe\Dev\BuildTask;
+use SilverStripe\SiteConfig\SiteConfig;
+
+
+class DeleteUserformSubmissionsTask extends BuildTask
+{
 
     public $title = 'GDPR - Delete user form data';
 

@@ -4,7 +4,7 @@ namespace TimeZoneOne\GDPR\Extension;
 
 use TractorCow\DynamicCache\Extension\DynamicCacheExtension;
 
-if(class_exists(DynamicCacheExtension::class)) {
+if(!class_exists(DynamicCacheExtension::class)) {
     return;
 }
 
