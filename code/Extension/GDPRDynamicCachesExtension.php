@@ -1,13 +1,14 @@
 <?php
 
-/**
- * Created by Nivanka Fonseka (nivanka@silverstripers.com).
- * User: nivankafonseka
- * Date: 5/25/18
- * Time: 11:16 AM
- * To change this template use File | Settings | File Templates.
- */
-class GDPRDynamicCachesExtension extends DataExtension
+namespace TimeZoneOne\GDPR\Extension;
+
+use TractorCow\DynamicCache\Extension\DynamicCacheExtension;
+
+if(class_exists(DynamicCacheExtension::class)) {
+    return;
+}
+
+class GDPRDynamicCachesExtension extends DynamicCacheExtension
 {
 
 	public function updateCacheKeyFragments(array &$fragments)

@@ -1,6 +1,13 @@
 <?php
 
-class CookieConsent extends Extension {
+namespace TimeZoneOne\GDPR\Extension;
+
+
+
+use SilverStripe\Core\Extension;
+
+class CookieConsent extends Extension
+{
 
     public function onBeforeInit(){
         $this->siteConfig = SiteConfig::current_site_config();

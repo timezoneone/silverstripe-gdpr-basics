@@ -17,6 +17,11 @@
         }
     },
     "extra": {
-        "installer-name": "gdpr-basics"
+        "installer-name": "gdpr-basics",
+        "expose": [
+            "client/dist",
+            "client/images"
+        ]
+
     }
 }

@@ -1,9 +1,7 @@
 <?php
-/**
- * Created by priyashantha@silverstripers.com
- * Date: 5/22/18
- * Time: 2:15 PM
- */
+
+
+namespace TimeZoneOne\GDPR\Task;
 
 class DeleteUserformSubmissionsTask extends BuildTask {
 

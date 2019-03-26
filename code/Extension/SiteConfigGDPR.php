@@ -1,8 +1,14 @@
 <?php
 
+namespace TimeZoneOne\GDPR\Extension;
 
 
-class SiteConfigGDPR extends DataExtension {
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\Security\Member;
+
+class SiteConfigGDPR extends DataExtension
+{
 
     private static $db = array(
         'GDPRIsActive' => 'Boolean',
@@ -18,9 +24,9 @@ class SiteConfigGDPR extends DataExtension {
     );
 
     private static $has_one = array(
-        'PrivacyPolicyPage' => 'Page',
-        'CookiePolicyPage' => 'Page',
-        'DataProtectionOfficer' => 'Member'
+        'PrivacyPolicyPage' => SiteTree::class,
+        'CookiePolicyPage' => SiteTree::class,
+        'DataProtectionOfficer' => Member::class
     );
 
     private static $enabled_cache = null;

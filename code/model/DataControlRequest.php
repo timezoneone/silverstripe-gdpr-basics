@@ -1,6 +1,12 @@
 <?php
 
-class DataControlRequest extends DataObject{
+
+namespace TimeZoneOne\GDPR\Model;
+
+use SilverStripe\ORM\DataObject;
+
+class DataControlRequest extends DataObject 
+{
 
     private static $db = array(
         'FirstName' => 'Varchar(255)',

@@ -1,5 +1,13 @@
-<?php 
-class DataControlRequestAdmin extends ModelAdmin {
+<?php
+
+
+namespace TimeZoneOne\GDPR\Admin;
+
+use SilverStripe\Admin\ModelAdmin;
+use TimeZoneOne\GDPR\Model\DataControlRequest;
+
+class DataControlRequestAdmin extends ModelAdmin
+{
 
     private static $menu_title = 'Data Control Requests';
 
@@ -8,16 +16,15 @@ class DataControlRequestAdmin extends ModelAdmin {
     private static $menu_priority = -100;
 
     private static $managed_models = array(
-    	'DataControlRequest'
+    	DataControlRequest::class
     );
 
     public function getEditForm($id = null, $fields = null) {
-	    $form = parent::getEditForm($id, $fields);
-	    $gridFieldName = $this->sanitiseClassName($this->modelClass);
-	    if($gridFieldName=='DataControlRequest'){
-	    	$gridField = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
-	    }
-	    return $form;
-	  }
+        $form = parent::getEditForm($id, $fields);
+        if($this->modelClass == DataControlRequest::class){
+            $gridField = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
+        }
+        return $form;
+    }
 
 }

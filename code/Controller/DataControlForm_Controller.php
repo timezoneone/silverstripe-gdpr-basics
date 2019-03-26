@@ -1,6 +1,8 @@
 <?php
 
-class DataControlForm_Controller extends Page_Controller  {
+namespace TimeZoneOne\GDPR\Controller;
+
+class DataControlFormController extends \PageController  {
 
     public function init() {
         parent::init();

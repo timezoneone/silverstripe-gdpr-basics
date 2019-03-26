@@ -1,7 +1,6 @@
 ---
 Name: gdprroutes
-After: framework/routes#coreroutes
 ---
-Director:
+SilverStripe\Control\Director:
   rules:
-    'data-control//$Action' : 'DataControlForm_Controller'
+    'data-control//$Action' : TimeZoneOne\GDPR\Controller\DataControlFormController

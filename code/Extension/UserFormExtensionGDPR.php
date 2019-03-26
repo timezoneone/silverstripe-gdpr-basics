@@ -1,8 +1,15 @@
 <?php
 
-class UserFormExtensionGDPR extends Extension {
 
-    public function updateFormFields(&$fields){
+namespace TimeZoneOne\GDPR\Extension;
+
+use SilverStripe\Core\Extension;
+
+class UserFormExtensionGDPR extends Extension
+{
+
+    public function updateFormFields(&$fields)
+    {
         
         $siteConfig = SiteConfig::current_site_config();
         if (SiteConfigGDPR::is_enable_for_request()) {
