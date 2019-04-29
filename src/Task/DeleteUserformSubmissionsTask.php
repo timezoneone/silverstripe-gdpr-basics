@@ -1,11 +1,15 @@
 <?php
-/**
- * Created by priyashantha@silverstripers.com
- * Date: 5/22/18
- * Time: 2:15 PM
- */
 
-class DeleteUserformSubmissionsTask extends BuildTask {
+
+namespace TimeZoneOne\GDPR\Task;
+
+use SilverStripe\Dev\BuildTask;
+use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\UserForms\Model\Submission\SubmittedForm;
+
+
+class DeleteUserformSubmissionsTask extends BuildTask
+{
 
     public $title = 'GDPR - Delete user form data';
 
@@ -24,9 +28,6 @@ class DeleteUserformSubmissionsTask extends BuildTask {
             $submissionsToBeDeleted = SubmittedForm::get()->filter('Created:LessThan', $dtForSelectedValue);
             if ($countToBeDeleted = $submissionsToBeDeleted->count()) {
                 foreach ($submissionsToBeDeleted as $submission) {
-                    foreach ($submission->Values() as $value) {
-                        $value->delete();
-                    }
                     $submission->delete();
                 }
                 echo '<h3>Deleted '.$countToBeDeleted.' submission(s)</h3>';

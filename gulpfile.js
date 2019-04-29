@@ -10,7 +10,7 @@ var gulp = require('gulp'),
  *   Bundle JS files
  */
 var jsFiles = [
-        './javascript/cookie-permission.js'
+        './client/javascript/cookie-permission.js'
     ];
 
 gulp.task('js', function() {
@@ -28,7 +28,7 @@ gulp.task('js:w', function() {
  * Compile SCSS/SASS files
  */
 gulp.task('scss', function() {
-    gulp.src(['scss/cookie-permission.scss'])
+    gulp.src(['client/scss/cookie-permission.scss'])
         .pipe(sass.sync({
             outputStyle: 'compressed'
         }).on('error', sass.logError))

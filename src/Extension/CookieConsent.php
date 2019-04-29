@@ -1,12 +1,22 @@
 <?php
 
-class CookieConsent extends Extension {
+namespace TimeZoneOne\GDPR\Extension;
 
-    public function onBeforeInit(){
+use SilverStripe\Core\Extension;
+use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\View\ArrayData;
+use SilverStripe\View\Requirements;
+
+class CookieConsent extends Extension
+{
+
+    public function onBeforeInit()
+    {
         $this->siteConfig = SiteConfig::current_site_config();
     }
 
-    public function onAfterInit(){
+    public function onAfterInit()
+    {
         if (SiteConfigGDPR::is_enable_for_request()) {
 
             $cookieConsentPrompt = new ArrayData([
@@ -73,15 +83,13 @@ class CookieConsent extends Extension {
             $colorPalette = new ArrayData([
                 'PrimaryColor' => $this->siteConfig->PrimaryColor ? '#'.$this->siteConfig->PrimaryColor : '#D65922'
             ]);
-
             Requirements::customCSS($colorPalette->renderWith('Style'));
-
-            Requirements::javascript('gdpr-basics/dist/cookie-permission.min.js');
-
+            Requirements::javascript('timezoneone/silverstripe-gdpr-basics: client/dist/cookie-permission.min.js');
         }
     }
 
-    public function GDPR(){
+    public function GDPR()
+    {
         return SiteConfigGDPR::is_enable_for_request();
     }
 

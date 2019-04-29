@@ -1,19 +1,18 @@
 ---
 Name: gdpr-basics
 ---
-
-Page_Controller:
+PageController:
   extensions:
-    - CookieConsent
+    - TimeZoneOne\GDPR\Extension\CookieConsent
 
-SiteConfig:
+SilverStripe\SiteConfig\SiteConfig:
   extensions:
-    - SiteConfigGDPR
+    - TimeZoneOne\GDPR\Extension\SiteConfigGDPR
 
 LeftAndMain:
   extra_requirements_css:
     - gdpr-basics/admin.css
 
-UserForm:
+SilverStripe\UserForms\Form\UserForm:
   extensions:
-    - UserFormExtensionGDPR
+    - TimeZoneOne\GDPR\Extension\UserFormExtensionGDPR

@@ -1,14 +1,15 @@
 <?php
 
-$basic = HtmlEditorConfig::get('gdpr-basic')
-            ->setButtonsForLine( 1, array(
-                'bold',
-                'italic',
-                'link',
-                'unlink',
-                'bullist',
-                'numlist'
-            ))
-            ->setButtonsForLine(2, null)
-            ->setButtonsForLine(3, null);
+use SilverStripe\Forms\HTMLEditor\HTMLEditorConfig;
+
+HTMLEditorConfig::get('gdpr-basic')
+    ->setButtonsForLine(1, [
+        'bold',
+        'italic',
+        'link',
+        'unlink',
+        'bullist',
+        'numlist'
+    ])->setButtonsForLine(2, null)
+    ->setButtonsForLine(3, null);
 

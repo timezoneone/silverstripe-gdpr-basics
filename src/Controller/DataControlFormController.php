@@ -1,26 +1,43 @@
 <?php
 
-class DataControlForm_Controller extends Page_Controller  {
+namespace TimeZoneOne\GDPR\Controller;
+
+use SilverStripe\Control\Controller;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\EmailField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\TextField;
+use SilverStripe\ORM\FieldType\DBHTMLText;
+use SilverStripe\SiteConfig\SiteConfig;
+use TimeZoneOne\GDPR\Extension\SiteConfigGDPR;
+use TimeZoneOne\GDPR\Model\DataControlRequest;
+
+class DataControlFormController extends \PageController  {
 
     public function init() {
         parent::init();
     }
 
-    private static $allowed_actions = array(
+    private static $allowed_actions = [
         'verify',
         'confirm'
-    );
+    ];
 
     public function index(){
 
         $config = SiteConfig::current_site_config();
-
         if(!$config->DataControlFormsActive){
            return $this->httpError(404);
         }else{
+            $html = DBHTMLText::create();
+            $html->setValue('<p>Use the form below to submit a request for a copy of your data or to have your data removed.</p>');
             return $this->customise(array(
                 'Title' => 'Data Control',
-                'Content' => DBField::create_field('HTMLText', '<p>Use the form below to submit a request for a copy of your data or to have your data removed.</p>'),
+                'Content' =>  $html,
                 'Form' => $this->DataRequestForm()
             ))->renderWith('Page');
         }
@@ -30,33 +47,37 @@ class DataControlForm_Controller extends Page_Controller  {
     public function verify($request){
 
         $config = SiteConfig::current_site_config();
-
         $formData = $request->postVars();
-
         if(empty($formData) || !$config->DataControlFormsActive){
-
            return $this->httpError(404);
 
         }else{
             //store record in Database.
             $record = new DataControlRequest();
-            $record->FirstName  = filter_var($formData['FirstName'], FILTER_SANITIZE_STRING);
-            $record->LastName   = filter_var($formData['LastName'], FILTER_SANITIZE_STRING);
-            $record->Email      = filter_var($formData['Email'], FILTER_SANITIZE_EMAIL);
+            $record->FirstName = filter_var($formData['FirstName'], FILTER_SANITIZE_STRING);
+            $record->LastName = filter_var($formData['LastName'], FILTER_SANITIZE_STRING);
+            $record->Email = filter_var($formData['Email'], FILTER_SANITIZE_EMAIL);
             $record->Verification = filter_var($formData['SecurityID'], FILTER_SANITIZE_STRING);
-            $record->IsEUResident  = (bool)$formData['IsEUResident'];
-            $record->RequiredAction  = isset($formData['action_RemoveData']) ? 'Delete Data' : 'Provide data';
-            $record->Status     = 'Awaiting Verification';
+            $record->IsEUResident = (bool)$formData['IsEUResident'];
+            $record->RequiredAction = isset($formData['action_RemoveData']) ? 'Delete Data' : 'Provide data';
+            $record->Status = 'Awaiting Verification';
             $record->write();
-
-            $UsersRequest = isset($formData['action_RemoveData']) ? 'delete your data' : 'provide a copy of your data';
+            $usersRequest = isset($formData['action_RemoveData']) ? 'delete your data' : 'provide a copy of your data';
 
             $config = SiteConfig::current_site_config();
             $dataProtectionOfficer = $config->DataProtectionOfficer();
 
+            $content = DBHTMLText::create();
+            $content->setValue('<p>Before we can action your request to '.
+                $usersRequest .
+                ', we need to verify that you are the owner of this email address. Please click the verification link in the email we\'ve sent you.</p><p>If you have any trouble, please contact our <a href="mailto:'.
+                $dataProtectionOfficer->Email.
+                '">Data Protection Officer, '.
+                $dataProtectionOfficer->FirstName.' '. $dataProtectionOfficer->LastName.
+                '</a>');
             return $this->customise(array(
                 'Title' => 'Confirm ownership',
-                'Content' => DBField::create_field('HTMLText', '<p>Before we can action your request to '.$UsersRequest.', we need to verify that you are the owner of this email address. Please click the verification link in the email we\'ve sent you.</p><p>If you have any trouble, please contact our <a href="mailto:'.$dataProtectionOfficer->Email.'">Data Protection Officer, '. $dataProtectionOfficer->FirstName.' '. $dataProtectionOfficer->LastName.'</a>')
+                'Content' => $content
             ))->renderWith('Page');
 
         }
