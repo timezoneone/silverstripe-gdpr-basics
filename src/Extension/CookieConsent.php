@@ -64,7 +64,7 @@ class CookieConsent extends Extension
                 Requirements::insertHeadTags(
                     "<script>
                     document.addEventListener('CookieConsentDenied', function(){
-                        if(!gaHasFired){
+                        if(!gaHasFired){ 
                             var head = document.head;
                             var script = document.createElement('script');
                             script.type = 'text/javascript';

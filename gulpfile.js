@@ -14,21 +14,21 @@ var jsFiles = [
     ];
 
 gulp.task('js', function() {
-    gulp.src(jsFiles)
+    return gulp.src(jsFiles)
         .pipe(rename('cookie-permission.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('client/dist'));
 });
 
 gulp.task('js:w', function() {
-    gulp.watch(jsFiles, ['js']);
+    return gulp.watch(jsFiles, { ignoreInitial: false }, gulp.parallel('js'));
 });
 
 /**
  * Compile SCSS/SASS files
  */
 gulp.task('scss', function() {
-    gulp.src(['client/scss/cookie-permission.scss'])
+    return gulp.src(['client/scss/cookie-permission.scss'])
         .pipe(sass.sync({
             outputStyle: 'compressed'
         }).on('error', sass.logError))
@@ -38,9 +38,10 @@ gulp.task('scss', function() {
 });
 
 gulp.task('scss:w', function() {
-    gulp.watch('./scss/**/*.scss', ['scss']);
+    return gulp.watch('./scss/**/*.scss', gulp.parallel('js'));
 });
 
-gulp.task('watch', ['js:w', 'scss:w']);
+gulp.task('watch', gulp.parallel('js:w', 'scss:w'));
 
-gulp.task('default', ['scss', 'js']);
+gulp.task('default', gulp.parallel('js', 'scss'));
+

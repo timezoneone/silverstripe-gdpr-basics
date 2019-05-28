@@ -10,7 +10,7 @@ if (document.createEvent) {
 CookieConsentGranted.eventName = "CookieConsentGranted";
 
 //CookieConsentDenied Event
-var CookieConsentDenied; 
+var CookieConsentDenied;
 if (document.createEvent) {
     CookieConsentDenied = document.createEvent("HTMLEvents");
     CookieConsentDenied.initEvent("CookieConsentDenied", true, true);
@@ -39,6 +39,7 @@ function SetCookie(name,value,days) {
 }
 
 function checkCookieConsent(){
+    console.log(getCookie('cookieConsent'));
     return getCookie('cookieConsent') === 'granted' ? true : false;
 }
 
