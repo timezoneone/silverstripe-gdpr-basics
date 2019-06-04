@@ -58,7 +58,7 @@ class DataControlFormController extends \PageController  {
             $record->LastName = filter_var($formData['LastName'], FILTER_SANITIZE_STRING);
             $record->Email = filter_var($formData['Email'], FILTER_SANITIZE_EMAIL);
             $record->Verification = filter_var($formData['SecurityID'], FILTER_SANITIZE_STRING);
-            $record->IsEUResident = (bool)$formData['IsEUResident'];
+            $record->IsEUResident = !empty($formData['IsEUResident']) ? (bool)$formData['IsEUResident'] : false;
             $record->RequiredAction = isset($formData['action_RemoveData']) ? 'Delete Data' : 'Provide data';
             $record->Status = 'Awaiting Verification';
             $record->write();
