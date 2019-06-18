@@ -31,7 +31,7 @@ class DataControlFormController extends \PageController  {
 
         $config = SiteConfig::current_site_config();
         if(!$config->DataControlFormsActive){
-           return $this->httpError(404);
+            return $this->httpError(404);
         }else{
             $html = DBHTMLText::create();
             $html->setValue('<p>Use the form below to submit a request for a copy of your data or to have your data removed.</p>');
@@ -49,7 +49,7 @@ class DataControlFormController extends \PageController  {
         $config = SiteConfig::current_site_config();
         $formData = $request->postVars();
         if(empty($formData) || !$config->DataControlFormsActive){
-           return $this->httpError(404);
+            return $this->httpError(404);
 
         }else{
             //store record in Database.
@@ -88,11 +88,10 @@ class DataControlFormController extends \PageController  {
 
         $data = $request->getVars();
         $config = SiteConfig::current_site_config();
-        
+        $htmlMessage = DBHTMLText::create();
+
         if( empty($data) || !isset($data['verification']) || !isset($data['request']) || !$config->DataControlFormsActive){
-
-           return $this->httpError(404);
-
+            return $this->httpError(404);
         }else{
 
             $Verification = filter_var($data['verification'], FILTER_SANITIZE_SPECIAL_CHARS);
@@ -107,23 +106,22 @@ class DataControlFormController extends \PageController  {
             $record = DataControlRequest::get()->filter(array('Verification'=>$Verification, 'ID'=> $ID))->First();
 
             if(!$record){
+                $htmlMessage->setValue("<p>Please sumbit a new request <a href=\"/data-control\">here</a> or contact our <a href=\"mailto:'.$dataProtectionOfficer->Email.'\">Data Protection Officer</a>.</p>");
                 return $this->customise(array(
-                                'Title' => 'Sorry, we couldn\'t find your original request.',
-                                'Content' => DBField::create_field('HTMLText', '<p>Please sumbit a new request <a href="/data-control">here</a> or contact our <a href="mailto:'.$dataProtectionOfficer->Email.'">Data Protection Officer</a>.</p>')
-                            ))->renderWith('Page');
+                    'Title' => 'Sorry, we couldn\'t find your original request.',
+                    'Content' => $htmlField
+                ))->renderWith('Page');
             }else if($record->Exists()){
-                    //update record in Database.
-                    $record->Status = 'Ready to action';
-                    $record->write();
+                //update record in Database.
+                $record->Status = 'Ready to action';
+                $record->write();
             }
 
             return $this->customise(array(
                 'Title' => 'Request Received',
-                'Content' => DBField::create_field('HTMLText', '<p>Thank you. Your request to '.$UsersRequest.' has been received. Our <a href="mailto:'.$dataProtectionOfficer->Email.'">Data Protection Officer</a> will be in touch.</p>')
+                'Content' => $htmlMessage->setValue('<p>Thank you. Your request to '.$UsersRequest.' has been received. Our <a href="mailto:'.$dataProtectionOfficer->Email.'">Data Protection Officer</a> will be in touch.</p>')
             ))->renderWith('Page');
-
         }
-
     }
 
     public function DataRequestForm(){
@@ -148,7 +146,7 @@ class DataControlFormController extends \PageController  {
                     ->addExtraClass('button button-primary feature'),
                 FormAction::create('RemoveData', 'Delete Data')
                     ->setUseButtonTag(true)
-                     ->setTitle('Remove Data')
+                    ->setTitle('Remove Data')
                     ->addExtraClass('button')
             ),
             new RequiredFields([
