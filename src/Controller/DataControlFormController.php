@@ -81,7 +81,6 @@ class DataControlFormController extends \PageController  {
             ))->renderWith('Page');
 
         }
-
     }
 
     public function confirm($request){
