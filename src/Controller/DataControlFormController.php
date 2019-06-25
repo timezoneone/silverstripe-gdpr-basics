@@ -159,5 +159,8 @@ class DataControlFormController extends \PageController  {
         $form->setFormAction(Controller::join_links(BASE_URL, 'data-control', 'verify'));
         return $form;
     }
-
+    public function getControllerName()
+    {
+        return DataControlFormController::class;
+    }
 }
