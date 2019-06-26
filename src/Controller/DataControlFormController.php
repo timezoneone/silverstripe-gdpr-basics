@@ -109,7 +109,7 @@ class DataControlFormController extends \PageController  {
                 $htmlMessage->setValue("<p>Please sumbit a new request <a href=\"/data-control\">here</a> or contact our <a href=\"mailto:'.$dataProtectionOfficer->Email.'\">Data Protection Officer</a>.</p>");
                 return $this->customise(array(
                     'Title' => 'Sorry, we couldn\'t find your original request.',
-                    'Content' => $htmlField
+                    'Content' => $htmlMessage
                 ))->renderWith('Page');
             }else if($record->Exists()){
                 //update record in Database.
