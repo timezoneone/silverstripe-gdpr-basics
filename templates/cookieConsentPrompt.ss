@@ -1,6 +1,6 @@
 window.BaseHref = "$DomainName", 
 window.cookieConsentPrompt = '<div id="cookie-consent">' +
-    '$CookieConsentDescription.RAW' +
+    '$CookieConsentDescriptionJS.RAW' +
     '<div class="cookie-consent-buttons">' +
         '<a class="button" href="#" id="sweetas">' +
             '$CookieConsentAgreeButtonLabel' +
