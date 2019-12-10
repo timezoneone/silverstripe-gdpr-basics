@@ -21,11 +21,6 @@ HTMLEditorConfig::get('gdpr-basic')
     ->setButtonsForLine(1, array(
         'bold',
         'italic',
-        'underline',
-        'ordered_list',
-        'removeformat',
-        'sslink',
-        'unlink',
         'bullist',
         'numlist'
     ))
