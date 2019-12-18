@@ -5,9 +5,7 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorConfig;
 HTMLEditorConfig::get('gdpr-basic')
     ->enablePlugins([
         'sslink' => 'vendor/silverstripe/admin/client/dist/js/TinyMCE_sslink.js',
-        'sslinkinternal' => 'vendor/silverstripe/cms/client/dist/js/TinyMCE_sslink-internal.js',
         'sslinkexternal' => 'vendor/silverstripe/admin/client/dist/js/TinyMCE_sslink-external.js',
-        'sslinkemail' => 'vendor/silverstripe/admin/client/dist/js/TinyMCE_sslink-email.js',
     ])
     ->setOptions([
         'skin' => 'silverstripe',
@@ -21,6 +19,8 @@ HTMLEditorConfig::get('gdpr-basic')
     ->setButtonsForLine(1, array(
         'bold',
         'italic',
+        'sslink',
+        'unlink',
         'bullist',
         'numlist'
     ))
