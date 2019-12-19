@@ -22,7 +22,7 @@ class CookieConsent extends Extension
             $cookieConsentPrompt = new ArrayData([
                 'DomainName'=> $_SERVER['HTTP_HOST'],
                 'CookieConsentDescription' => $this->siteConfig->CookieConsentDescription ? addslashes($this->siteConfig->CookieConsentDescription) : 'This website uses cookies',
-                'CookieConsentDescriptionJS' => str_replace("\n", '', $this->siteConfig->CookieConsentDescription ? addslashes($this->siteConfig->CookieConsentDescription) : 'This website uses cookies'),
+                'CookieConsentDescriptionJS' => str_replace("\n", '', $this->siteConfig->dbObject('CookieConsentDescription')->forTemplate() ? addslashes($this->siteConfig->dbObject('CookieConsentDescription')->forTemplate()) : 'This website uses cookies'),
                 'CookieConsentAgreeButtonLabel' => $this->siteConfig->CookieConsentAgreeButtonLabel ? addslashes($this->siteConfig->CookieConsentAgreeButtonLabel) : 'Accept',
                 'CookieConsentDeclineButtonLabel' => $this->siteConfig->CookieConsentDeclineButtonLabel ? addslashes($this->siteConfig->CookieConsentDeclineButtonLabel) : 'Decline'
             ]);

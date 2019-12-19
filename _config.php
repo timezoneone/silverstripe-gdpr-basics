@@ -5,6 +5,7 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorConfig;
 HTMLEditorConfig::get('gdpr-basic')
     ->enablePlugins([
         'sslink' => 'vendor/silverstripe/admin/client/dist/js/TinyMCE_sslink.js',
+        'sslinkinternal' => 'vendor/silverstripe/cms/client/dist/js/TinyMCE_sslink-internal.js',
         'sslinkexternal' => 'vendor/silverstripe/admin/client/dist/js/TinyMCE_sslink-external.js',
     ])
     ->setOptions([
