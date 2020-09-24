@@ -87,11 +87,11 @@ function getCookieConsent(){
             }
         }
         SetCookie('cookieConsent','granted',365,'');
-        agreeButton.innerHTML = 'Thank you!';
+        agreeButton.innerHTML = '谢谢';
         setTimeout(function(){
             permissionPrompt.classList.remove('open');
             permissionPrompt.setAttribute('aria-hidden', 'true');
-            agreeButton.innerHTML = 'That\'s fine'
+            agreeButton.innerHTML = '同意'
         },500);
         return false;
     }); 
@@ -109,11 +109,11 @@ function getCookieConsent(){
         }
 
         SetCookie('cookieConsent','false',365,'');
-        declineButton.innerHTML = 'You got it!';
+        declineButton.innerHTML = '谢谢';
         setTimeout(function(){
             permissionPrompt.classList.remove('open');
             permissionPrompt.setAttribute('aria-hidden', 'true');
-            declineButton.innerHTML = 'No thanks';
+            declineButton.innerHTML = '不同意';
         },500);
         return false;
     }); 
