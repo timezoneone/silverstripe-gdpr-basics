@@ -30,11 +30,15 @@ class CookieConsent extends Extension
             Requirements::insertHeadTags(
                 '<script>
                     var gaHasFired = false;
-                    function waitForAllTheThings(fn) { 
-                        if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+                    function waitForAllTheThings(fn) {
+                        var docReady = document.attachEvent 
+                            ? document.readyState === "complete" 
+                            : document.readyState !== "loading";
+                        
+                        if (docReady){
                             fn();
                         } else {
-                            document.addEventListener(\'DOMContentLoaded\', fn);
+                            document.addEventListener("DOMContentLoaded", fn);
                         }
                     }
                 </script>'
