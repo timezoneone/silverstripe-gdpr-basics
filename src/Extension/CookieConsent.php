@@ -5,6 +5,7 @@ namespace TimeZoneOne\GDPR\Extension;
 use SilverStripe\Core\Extension;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ArrayData;
+use SilverStripe\View\HTML;
 use SilverStripe\View\Requirements;
 
 class CookieConsent extends Extension
@@ -58,66 +59,36 @@ class CookieConsent extends Extension
             ]);
 
             Requirements::insertHeadTags(
-                '<script>
-                    var gaHasFired = false;
-                    function waitForAllTheThings(fn) {
-                        var docReady = document.attachEvent 
-                            ? document.readyState === "complete" 
-                            : document.readyState !== "loading";
-                        
-                        if (docReady){
-                            fn();
-                        } else {
-                            document.addEventListener("DOMContentLoaded", fn);
-                        }
-                    }
-                </script>'
+                HTML::createTag('script', [
+                    'async' => true,
+                    'src' => "https://www.googletagmanager.com/gtag/js?id={$tagManagerId}",
+                ])
             );
 
-            if($this->siteConfig->GTMCode || $this->siteConfig->GoogleTagManagerContainerId){
-                $gtmCode = $this->siteConfig->GTMCode;
-                if($this->siteConfig->GoogleTagManagerContainerId) {
-                    $gtmCode = $this->siteConfig->GoogleTagManagerContainerId;
-                }
-                Requirements::insertHeadTags(
-                    "<script>
-                    document.addEventListener('CookieConsentGranted', function(){
-                        if(!gaHasFired){
-                            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                            })(window,document,'script','dataLayer','" . $gtmCode . "');
-                            gaHasFired = true;
+            Requirements::insertHeadTags(
+                "<script>
+                    window.ga = {
+                        gaHasFired: false,
+                        gaCode: '{$tagManagerId}',
+                    };
+                    
+                    function waitForAllTheThings(fn) {
+                        var isDocReady = document.attachEvent
+                            ? document.readyState === 'complete'
+                            : document.readyState !== 'loading';
+
+                        if (isDocReady){
+                            fn();
+                        } else {
+                            document.addEventListener('DOMContentLoaded', fn);
                         }
-                    });
-                    </script>"
-                );
-            }
+                    }
+                </script>"
+            );
 
-            if($this->siteConfig->GACode){
-                Requirements::insertHeadTags(
-                    "<script>
-                    document.addEventListener('CookieConsentDenied', function(){
-                        if(!gaHasFired){ 
-                            var head = document.head;
-                            var script = document.createElement('script');
-                            script.type = 'text/javascript';
-                            script.src = 'https://www.googletagmanager.com/gtag/js?id=".$this->siteConfig->GACode."';
-                            head.appendChild(script);
-
-                            window.dataLayer = window.dataLayer || [];
-                            function gtag(){dataLayer.push(arguments);}
-                            gtag('js', new Date());
-                            gtag('config', '".$this->siteConfig->GACode."', { 'anonymize_ip': true });
-                            gaHasFired = true;
-                        }
-                    });
-                    </script>"
-                );
-            }
-
-            Requirements::customScript($cookieConsentPrompt->renderWith('cookieConsentPrompt'));
+            Requirements::customScript(
+                $cookieConsentPrompt->renderWith('cookieConsentPrompt')
+            );
 
             $colorPalette = new ArrayData([
                 'PrimaryColor' => $this->siteConfig->PrimaryColor ? '#'.$this->siteConfig->PrimaryColor : '#D65922'

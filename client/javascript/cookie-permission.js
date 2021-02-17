@@ -1,3 +1,20 @@
+window.dataLayer = window.dataLayer || [];
+
+function gtag() {
+  dataLayer.push(arguments);
+}
+
+function analyticsConsentGranted() {
+  gtag('consent', 'update', {
+    ad_storage: 'granted',
+    analytics_storage: 'granted'
+  });
+}
+
+gtag('js', new Date());
+gtag('config', window.ga.gaCode);
+
+
 //CookieConsentGranted Event
 let CookieConsentGranted;
 if (document.createEvent) {
@@ -69,6 +86,11 @@ function getCookieConsent() {
   window.cookieConsent = getCookie('cookieConsent');
 
   if (window.cookieConsent === '') {
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      analytics_storage: 'denied',
+    });
+
     permissionPrompt.classList.add('open');
   }
 
@@ -90,8 +112,8 @@ function getCookieConsent() {
   agreeButton.addEventListener('click', function (e) {
     e.preventDefault();
 
-    //if permission hasn't previously been granted
-    //fire the 'CookieConsentGranted' event...
+    // if permission hasn't previously been granted
+    // fire the 'CookieConsentGranted' event...
     if (!checkCookieConsent()) {
       if (document.createEvent) {
         document.dispatchEvent(CookieConsentGranted);
@@ -147,9 +169,13 @@ waitForAllTheThings(getCookieConsent);
 document.addEventListener('CookieConsentGranted', function () {
   document.body.classList.add('CookieConsentGranted');
   document.body.classList.remove('CookieConsentDenied');
+
+  analyticsConsentGranted();
+  window.ga.gaHasFired = true;
 });
 
 document.addEventListener('CookieConsentDenied', function () {
   document.body.classList.add('CookieConsentDenied');
   document.body.classList.remove('CookieConsentGranted');
+  window.ga.gaHasFired = true;
 });
