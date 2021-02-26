@@ -1,22 +1,30 @@
 window.dataLayer = window.dataLayer || [];
 
 function gtag() {
-  dataLayer.push(arguments);
+  window.dataLayer.push(arguments);
 }
 
-function analyticsConsentGranted() {
+function setConsentGranted() {
   gtag('consent', 'update', {
     ad_storage: 'granted',
     analytics_storage: 'granted'
   });
 }
 
+// Initialise gtag
 gtag('js', new Date());
-gtag('config', window.ga.gaCode);
+
+if (window.ga.tagManagerId) {
+  gtag('config', window.ga.tagManagerId);
+}
+
+if (window.ga.analyticsId) {
+  gtag('config', window.ga.analyticsId);
+}
 
 
 //CookieConsentGranted Event
-let CookieConsentGranted;
+var CookieConsentGranted;
 if (document.createEvent) {
   CookieConsentGranted = document.createEvent('HTMLEvents');
   CookieConsentGranted.initEvent('CookieConsentGranted', true, true);
@@ -27,7 +35,7 @@ if (document.createEvent) {
 CookieConsentGranted.eventName = 'CookieConsentGranted';
 
 //CookieConsentDenied Event
-let CookieConsentDenied;
+var CookieConsentDenied;
 if (document.createEvent) {
   CookieConsentDenied = document.createEvent('HTMLEvents');
   CookieConsentDenied.initEvent('CookieConsentDenied', true, true);
@@ -38,11 +46,11 @@ if (document.createEvent) {
 CookieConsentDenied.eventName = 'CookieConsentDenied';
 
 function getCookie(cname) {
-  let name = cname + '=';
-  let ca = document.cookie.split(';');
+  var name = cname + '=';
+  var ca = document.cookie.split(';');
 
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i].trim();
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i].trim();
     if (c.indexOf(name) == 0) {
       return c.substring(name.length, c.length);
     }
@@ -52,8 +60,8 @@ function getCookie(cname) {
 }
 
 function setCookie(name, value, days) {
-  const today = new Date();
-  const expire = new Date();
+  var today = new Date();
+  var expire = new Date();
 
   if (days == null || days == 0) {
     days = 1;
@@ -61,10 +69,9 @@ function setCookie(name, value, days) {
   expire.setTime(today.getTime() + 3600000 * 24 * days);
 
   document.cookie =
-    `${name}=${escape(value)};` +
-    `expires=${expire.toGMTString()};` +
-    'path=/;' +
-    `domain=${window.BaseHref}`;
+    name + '=' + escape(value) +
+    ';expires=' + expire.toGMTString() +
+    ';path=/;domain=' + window.BaseHref;
 }
 
 function checkCookieConsent() {
@@ -72,13 +79,13 @@ function checkCookieConsent() {
 }
 
 function getCookieConsent() {
-  const cookieConsentPrompt = document
+  var cookieConsentPrompt = document
     .createRange()
     .createContextualFragment(window.cookieConsentPrompt);
 
   document.body.appendChild(cookieConsentPrompt);
 
-  const permissionPrompt = document.getElementById('cookie-consent'),
+  var permissionPrompt = document.getElementById('cookie-consent'),
     agreeButton = document.getElementById('sweetas'),
     declineButton = document.getElementById('yeahnah');
 
@@ -94,7 +101,7 @@ function getCookieConsent() {
     permissionPrompt.classList.add('open');
   }
 
-  let eventToFire;
+  var eventToFire;
   if (checkCookieConsent()) {
     eventToFire = CookieConsentGranted;
   } else {
@@ -170,7 +177,7 @@ document.addEventListener('CookieConsentGranted', function () {
   document.body.classList.add('CookieConsentGranted');
   document.body.classList.remove('CookieConsentDenied');
 
-  analyticsConsentGranted();
+  setConsentGranted();
   window.ga.gaHasFired = true;
 });
 

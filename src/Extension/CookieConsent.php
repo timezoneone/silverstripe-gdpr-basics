@@ -17,21 +17,34 @@ class CookieConsent extends Extension
 
     public function onAfterInit()
     {
-        if (SiteConfigGDPR::is_enable_for_request()) {
-            $tagManagerId = $this->siteConfig->GTMCode;
+        $config = $this->siteConfig;
+        if (
+            SiteConfigGDPR::is_enable_for_request() &&
+            ($config->GTMCode || $config->GACode)
+        ) {
+            $tagManagerId = $config->GTMCode;
+            $analyticsId = $config->GACode;
 
+            // base tag manager script tag
             Requirements::insertHeadTags(
-                $this->renderGoogleTagManagerScriptTag($tagManagerId)
+                $this->renderGoogleTagManagerScriptTag(
+                    $tagManagerId,
+                    $analyticsId
+                )
+            );
+            // our custom tag manager loader
+            Requirements::insertHeadTags(
+                $this->getGoogleAnalyticsLoaderScriptTag(
+                    $tagManagerId,
+                    $analyticsId
+                )
             );
 
-            Requirements::insertHeadTags(
-                $this->getGoogleAnalyticsLoaderScriptTag($tagManagerId)
-            );
-
+            // prompt
             Requirements::customScript($this->renderCookieConsentPrompt());
-
+            // some styling
             Requirements::customCSS($this->renderStyle());
-
+            // our minified js
             Requirements::javascript(
                 'timezoneone/silverstripe-gdpr-basics: client/dist/cookie-permission.min.js'
             );
@@ -93,21 +106,28 @@ class CookieConsent extends Extension
         ]))->renderWith('Style');
     }
 
-    private function renderGoogleTagManagerScriptTag($tagManagerId)
-    {
+    private function renderGoogleTagManagerScriptTag(
+        $tagManagerId,
+        $analyticsId
+    ) {
+        $id = $tagManagerId ?: $analyticsId;
+
         return HTML::createTag('script', [
             'async' => true,
-            'src' => "https://www.googletagmanager.com/gtag/js?id={$tagManagerId}",
+            'src' => "https://www.googletagmanager.com/gtag/js?id={$id}",
         ]);
     }
 
-    private function getGoogleAnalyticsLoaderScriptTag($tagManagerId)
-    {
+    private function getGoogleAnalyticsLoaderScriptTag(
+        $tagManagerId,
+        $analyticsId
+    ) {
         $content =
             /** @lang JavaScript */
             "window.ga = {
                     gaHasFired: false,
-                    gaCode: '{$tagManagerId}'
+                    tagManagerId: '{$tagManagerId}'
+                    analyticsId: '{$analyticsId}'
                 };
                 
                 function waitForAllTheThings(fn) {
