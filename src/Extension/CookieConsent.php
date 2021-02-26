@@ -141,7 +141,7 @@ class CookieConsent extends Extension
             /** @lang JavaScript */
             "window.gaConf = {
                     gaHasFired: false,
-                    tagManagerId: '{$tagManagerId}'
+                    tagManagerId: '{$tagManagerId}',
                     analyticsId: '{$analyticsId}'
                 };
                 
