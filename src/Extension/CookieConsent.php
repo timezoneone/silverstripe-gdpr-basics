@@ -23,21 +23,22 @@ class CookieConsent extends Extension
             ($config->GTMCode || $config->GACode)
         ) {
             $tagManagerId = $config->GTMCode;
-            $analyticsId = $config->GACode;
+            if ($tagManagerId) {
+                Requirements::insertHeadTags(
+                    $this->renderGoogleTagManagerScriptTag($tagManagerId)
+                );
+            }
 
-            // base tag manager script tag
-            Requirements::insertHeadTags(
-                $this->renderGoogleTagManagerScriptTag(
-                    $tagManagerId,
-                    $analyticsId
-                )
-            );
+            $analyticsId = $config->GACode;
+            if ($analyticsId) {
+                Requirements::insertHeadTags(
+                    $this->renderGoogleAnalyticsScriptTag($analyticsId)
+                );
+            }
+
             // our custom tag manager loader
             Requirements::insertHeadTags(
-                $this->getGoogleAnalyticsLoaderScriptTag(
-                    $tagManagerId,
-                    $analyticsId
-                )
+                $this->renderGoogleLoaderScriptTag($tagManagerId, $analyticsId)
             );
 
             // prompt
@@ -106,25 +107,39 @@ class CookieConsent extends Extension
         ]))->renderWith('Style');
     }
 
-    private function renderGoogleTagManagerScriptTag(
-        $tagManagerId,
-        $analyticsId
-    ) {
-        $id = $tagManagerId ?: $analyticsId;
-
+    private function renderGoogleTagManagerScriptTag($tagManagerId)
+    {
         return HTML::createTag('script', [
             'async' => true,
-            'src' => "https://www.googletagmanager.com/gtag/js?id={$id}",
+            'src' => "https://www.googletagmanager.com/gtag/js?id={$tagManagerId}",
         ]);
     }
 
-    private function getGoogleAnalyticsLoaderScriptTag(
-        $tagManagerId,
-        $analyticsId
-    ) {
+    public function renderGoogleAnalyticsScriptTag($analyticsId)
+    {
+        $content =
+            // https://developers.google.com/analytics/devguides/collection/analyticsjs#alternative_async_tag
+            /** @lang JavaScript */
+            "window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+            ga('create', '{$analyticsId}', 'auto');
+            ga('send', 'pageview');";
+
+        return HTML::createTag(
+            'script',
+            [
+                'type' => 'application/javascript',
+                'src' => 'https://www.google-analytics.com/analytics.js',
+                'async' => true,
+            ],
+            $content
+        );
+    }
+
+    private function renderGoogleLoaderScriptTag($tagManagerId, $analyticsId)
+    {
         $content =
             /** @lang JavaScript */
-            "window.ga = {
+            "window.gaConf = {
                     gaHasFired: false,
                     tagManagerId: '{$tagManagerId}'
                     analyticsId: '{$analyticsId}'

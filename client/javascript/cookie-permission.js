@@ -14,12 +14,12 @@ function setConsentGranted() {
 // Initialise gtag
 gtag('js', new Date());
 
-if (window.ga.tagManagerId) {
-  gtag('config', window.ga.tagManagerId);
+if (window.gaConf.tagManagerId) {
+  gtag('config', window.gaConf.tagManagerId);
 }
 
-if (window.ga.analyticsId) {
-  gtag('config', window.ga.analyticsId);
+if (window.gaConf.analyticsId) {
+  gtag('config', window.gaConf.analyticsId);
 }
 
 
@@ -178,11 +178,11 @@ document.addEventListener('CookieConsentGranted', function () {
   document.body.classList.remove('CookieConsentDenied');
 
   setConsentGranted();
-  window.ga.gaHasFired = true;
+  window.gaConf.gaHasFired = true;
 });
 
 document.addEventListener('CookieConsentDenied', function () {
   document.body.classList.add('CookieConsentDenied');
   document.body.classList.remove('CookieConsentGranted');
-  window.ga.gaHasFired = true;
+  window.gaConf.gaHasFired = true;
 });
