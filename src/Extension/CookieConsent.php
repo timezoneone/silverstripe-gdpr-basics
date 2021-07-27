@@ -15,21 +15,29 @@ class CookieConsent extends Extension
         $this->siteConfig = SiteConfig::current_site_config();
     }
 
+    public function getGtmId() {
+        return $this->siteConfig->GTMCode;
+    }
+
+    public function getGaId() {
+        return $this->siteConfig->GACode;
+    }
+
     public function onAfterInit()
     {
         $config = $this->siteConfig;
+        $tagManagerId = $this->getGtmId();
+        $analyticsId = $this->getGaId();
         if (
             SiteConfigGDPR::is_enable_for_request() &&
-            ($config->GTMCode || $config->GACode)
+            ($tagManagerId || $analyticsId)
         ) {
-            $tagManagerId = $config->GTMCode;
             if ($tagManagerId) {
                 Requirements::insertHeadTags(
                     $this->renderGoogleTagManagerScriptTag($tagManagerId)
                 );
             }
 
-            $analyticsId = $config->GACode;
             if ($analyticsId) {
                 Requirements::insertHeadTags(
                     $this->renderGoogleAnalyticsScriptTag($analyticsId)
