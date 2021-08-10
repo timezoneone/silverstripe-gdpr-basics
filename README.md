@@ -1,4 +1,4 @@
-SilverStripe 3 Module for adding a user prompt to request cookie consent.
+SilverStripe 4 Module for adding a user prompt to request cookie consent.
 
 Once installed, it needs to be activated in Settings, under the GDPR tab.
 
