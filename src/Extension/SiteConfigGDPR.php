@@ -67,18 +67,22 @@ class SiteConfigGDPR extends DataExtension
             $PrivacyPolicyPageLink = '<a class="ss-ui-button cms-content-addpage-button tool-button font-icon-plus ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only policy-link" href="admin/pages/add/" role="button" aria-disabled="false"><span class="ui-button-text">Add new page</span></a>';
         }
 
+        $fields->addFieldToTab(
+            'Root.Main',
+            TextField::create('GTMCode','Google Tag Manager ID'),
+            'insertBefore'
+        );
+
         $fields->addFieldsToTab('Root.GDPR', array(
             CheckboxField::create('GDPRIsActive','Is Active'),
             CheckboxField::create('DataControlFormsActive','Use data control forms')
                 ->setDescription('Adds a form for users to make requests for their data. The form will appear at <a href="'.SiteConfigGDPR::siteURL().'data-control" traget="_blank">'.SiteConfigGDPR::siteURL().'/data-control</a>. If active, include a link to this page in your privacy Policy'),
             Wrapper::create(array(
                 DropdownField::create(
-                    'DataProtectionOfficerID', 
-                    'Data Protection Officer', 
+                    'DataProtectionOfficerID',
+                    'Data Protection Officer',
                     Member::get()->filter(array('Groups.Code' => 'Administrators'))->map('ID', 'Email')
                     )->setEmptyString(''),
-                TextField::create('GTMCode','Google Tag Manager ID')
-                    ->setDescription('Google Tag Manager is only used if user agrees to tracking cookies'),
                 TextField::create('GACode','Google Analytics ID')
                     ->setDescription('Anonymized Google Analytics is used when visitor has not accepted cookies.'),
                 DropdownField::create(
@@ -97,8 +101,8 @@ class SiteConfigGDPR extends DataExtension
                 ToggleCompositeField::create('CookiePolicy','Cookie Policy', array(
                     FieldGroup::create('',array(
                         DropdownField::create(
-                            'CookiePolicyPageID', 
-                            'Cookie Policy Page', 
+                            'CookiePolicyPageID',
+                            'Cookie Policy Page',
                             SiteTree::get()->exclude([
                                 'ClassName' => 'SilverStripe\\Blog\\Model\\BlogPost',
                                 'ClassName' => 'TimeZoneOne\\TomClient\\Page\\ListPage'
@@ -107,9 +111,9 @@ class SiteConfigGDPR extends DataExtension
                         LiteralField::create('CookiePolicyPageLink',$CookiePolicyPageLink)
                     )),
                     HTMLEditorField::create(
-                        'CookieConsentDescription', 
-                        'Cookie Consent Description', 
-                        $this->owner->CookieConsentDescription, 
+                        'CookieConsentDescription',
+                        'Cookie Consent Description',
+                        $this->owner->CookieConsentDescription,
                         'gdpr-basic'
                     )->setRows(4)
                     ->setDescription('A brief description of what you use cookies. Don\'t forget to include a link to your full cookie policy.'),
@@ -120,16 +124,16 @@ class SiteConfigGDPR extends DataExtension
                 ToggleCompositeField::create('PrivacyPolicy','Privacy Policy', array(
                     FieldGroup::create('',array(
                         DropdownField::create(
-                            'PrivacyPolicyPageID', 
-                            'Privacy Policy Page', 
+                            'PrivacyPolicyPageID',
+                            'Privacy Policy Page',
                             SiteTree::get()->exclude(array('ClassName'=>'BlogPost', 'ClassName'=>'TOPage'))->map('ID', 'Title')
                             )->setEmptyString(''),
                         LiteralField::create('PrivacyPolicyPageLink',$PrivacyPolicyPageLink)
                     )),
                     HTMLEditorField::create(
-                        'PrivacyPolicyDisclosure', 
-                        'Basic Privacy Policy Disclosure', 
-                        $this->owner->PrivacyPolicyDisclosure, 
+                        'PrivacyPolicyDisclosure',
+                        'Basic Privacy Policy Disclosure',
+                        $this->owner->PrivacyPolicyDisclosure,
                         'gdpr-basic'
                     )->setRows(4)
                     ->setDescription('A brief description of why you collect data. This will appear on all forms. Don\'t forget to include a link to your full privacy policy.')
