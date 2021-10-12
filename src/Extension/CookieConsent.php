@@ -16,11 +16,13 @@ class CookieConsent extends Extension
         $this->siteConfig = SiteConfig::current_site_config();
     }
 
-    public function getGtmId() {
+    public function getGtmId()
+    {
         return $this->siteConfig->GTMCode;
     }
 
-    public function getGaId() {
+    public function getGaId()
+    {
         return $this->siteConfig->GACode;
     }
 
@@ -40,10 +42,8 @@ class CookieConsent extends Extension
             return;
         }
 
-        if (
-            SiteConfigGDPR::is_enable_for_request() &&
-            ($tagManagerId || $analyticsId)
-        ) {
+        if (SiteConfigGDPR::is_enable_for_request()
+        && ($tagManagerId || $analyticsId)) {
             if ($tagManagerId) {
                 Requirements::insertHeadTags(
                     $this->renderGoogleTagManagerScriptTag($tagManagerId)
@@ -72,7 +72,8 @@ class CookieConsent extends Extension
         }
     }
 
-    public function gtmNoscript() {
+    public function gtmNoscript()
+    {
         $tagManagerId = $this->getGtmId();
 
         $noscript = $this->renderGoogleTagManagerNoscriptTag($tagManagerId);
@@ -207,7 +208,9 @@ class CookieConsent extends Extension
 
         return HTML::createTag(
             'script',
-            ['type' => 'application/javascript'],
+            [
+                'type' => 'application/javascript'
+            ],
             $content
         );
     }

@@ -3,22 +3,23 @@
 namespace TimeZoneOne\GDPR\Extension;
 
 
+use Exception;
+use SilverStripe\Forms\Tab;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Security\Member;
+use SilverStripe\Forms\FieldGroup;
+use SilverStripe\ORM\DataExtension;
 use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\FieldGroup;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
-use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\Tab;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\ToggleCompositeField;
-use SilverStripe\ORM\DataExtension;
-use SilverStripe\Security\Member;
 use SilverStripe\SiteConfig\SiteConfig;
-use TractorCow\Colorpicker\Forms\ColorField;
+use SilverStripe\Core\Config\Configurable;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
+use SilverStripe\Forms\ToggleCompositeField;
+use TractorCow\Colorpicker\Forms\ColorField;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 
 class SiteConfigGDPR extends DataExtension
 {
@@ -55,13 +56,13 @@ class SiteConfigGDPR extends DataExtension
     {
 
         $fields->addFieldToTab("Root", new Tab('GDPR'));
-        if($this->owner->CookiePolicyPage()->Exists()){
+        if($this->owner->CookiePolicyPage()->Exists()) {
             $CookiePolicyPageLink = '<a class="policy-link" href="'.$this->owner->CookiePolicyPage()->Link().'" target="_blank">View Cookie Policy Page</a>';
         }else{
             $CookiePolicyPageLink = '<a class="ss-ui-button cms-content-addpage-button tool-button font-icon-plus ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only policy-link" href="admin/pages/add/" role="button" aria-disabled="false"><span class="ui-button-text">Add new page</span></a>';
         }
 
-        if($this->owner->PrivacyPolicyPage()->Exists()){
+        if($this->owner->PrivacyPolicyPage()->Exists()) {
             $PrivacyPolicyPageLink = '<a class="policy-link" href="'.$this->owner->PrivacyPolicyPage()->Link().'" target="_blank">View Privacy Policy Page</a>';
         }else{
             $PrivacyPolicyPageLink = '<a class="ss-ui-button cms-content-addpage-button tool-button font-icon-plus ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only policy-link" href="admin/pages/add/" role="button" aria-disabled="false"><span class="ui-button-text">Add new page</span></a>';
@@ -142,7 +143,8 @@ class SiteConfigGDPR extends DataExtension
         ));
     }
 
-    public static function siteURL(){
+    public static function siteURL()
+    {
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
         $domainName = $_SERVER['HTTP_HOST'].'/';
         return $protocol.$domainName;

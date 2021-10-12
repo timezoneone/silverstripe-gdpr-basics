@@ -21,7 +21,7 @@ class UserFormExtensionGDPR extends Extension
         if (SiteConfigGDPR::is_enable_for_request()) {
             //don't insert the Privacy Policy disclosure if the form already has its own..
             $formHasPolicy = (bool)PrivacyPolicyField::get()->filter('ParentID',Controller::curr()->ID)->Count() > 0;
-            if(!$formHasPolicy && $siteConfig->PrivacyPolicyDisclosure){
+            if(!$formHasPolicy && $siteConfig->PrivacyPolicyDisclosure) {
                 $fields->push(LiteralField::create('PrivacyMessage', '<div class="udf-privacy-policy">' . ShortcodeParser::get_active()->parse($siteConfig->PrivacyPolicyDisclosure) . '</div>'));
             }
         }

@@ -9,7 +9,8 @@ if(!class_exists(EditableLiteralField::class)) {
     return false;
 }
 
-class PrivacyPolicyField extends EditableLiteralField {
+class PrivacyPolicyField extends EditableLiteralField
+{
 
     private static $singular_name = 'Privacy Policy Disclosure';
 
