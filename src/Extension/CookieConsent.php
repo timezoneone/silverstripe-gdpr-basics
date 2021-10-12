@@ -3,6 +3,7 @@
 namespace TimeZoneOne\GDPR\Extension;
 
 use SilverStripe\Core\Extension;
+use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\HTML;
@@ -69,6 +70,14 @@ class CookieConsent extends Extension
                 'timezoneone/silverstripe-gdpr-basics: client/dist/cookie-permission.min.js'
             );
         }
+    }
+
+    public function gtmNoscript() {
+        $tagManagerId = $this->getGtmId();
+
+        $noscript = $this->renderGoogleTagManagerNoscriptTag($tagManagerId);
+
+        return DBField::create_field('HTMLText', $noscript);
     }
 
     public function GDPR()
@@ -139,11 +148,19 @@ class CookieConsent extends Extension
         return HTML::createTag('script', [], $content);
     }
 
+    private function renderGoogleTagManagerNoscriptTag($gtmId)
     {
-        return HTML::createTag('script', [
-            'async' => true,
-            'src' => "https://www.googletagmanager.com/gtag/js?id={$tagManagerId}",
-        ]);
+        $iframe = HTML::createTag(
+            'iframe',
+            [
+                "src" => "https://www.googletagmanager.com/ns.html?id=$gtmId",
+                "height" => 0,
+                "width" => 0,
+                "style" => 'display:none;visibility:hidden'
+            ]
+        );
+
+        return HTML::createTag('noscript', [], $iframe);
     }
 
     public function renderGoogleAnalyticsScriptTag($analyticsId)
