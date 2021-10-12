@@ -165,12 +165,12 @@ class CookieConsent extends Extension
 
     public function renderGoogleAnalyticsScriptTag($analyticsId)
     {
-        $content =
-            // https://developers.google.com/analytics/devguides/collection/analyticsjs#alternative_async_tag
-            /** @lang JavaScript */
-            "window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+        // https://developers.google.com/analytics/devguides/collection/analyticsjs#alternative_async_tag
+        $content = <<<JS
+            window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
             ga('create', '{$analyticsId}', 'auto');
-            ga('send', 'pageview');";
+            ga('send', 'pageview');
+        JS;
 
         return HTML::createTag(
             'script',
@@ -185,25 +185,25 @@ class CookieConsent extends Extension
 
     private function renderGoogleLoaderScriptTag($tagManagerId, $analyticsId)
     {
-        $content =
-            /** @lang JavaScript */
-            "window.gaConf = {
-                    gaHasFired: false,
-                    tagManagerId: '{$tagManagerId}',
-                    analyticsId: '{$analyticsId}'
-                };
-                
-                function waitForAllTheThings(fn) {
-                    var isDocReady = document.attachEvent
-                        ? document.readyState === 'complete'
-                        : document.readyState !== 'loading';
+        $content = <<<JS
+            window.gaConf = {
+                gaHasFired: false,
+                tagManagerId: '{$tagManagerId}',
+                analyticsId: '{$analyticsId}'
+            };
 
-                    if (isDocReady){
-                        fn();
-                    } else {
-                        document.addEventListener('DOMContentLoaded', fn);
-                    }
-                }";
+            function waitForAllTheThings(fn) {
+                var isDocReady = document.attachEvent
+                    ? document.readyState === 'complete'
+                    : document.readyState !== 'loading';
+
+                if (isDocReady){
+                    fn();
+                } else {
+                    document.addEventListener('DOMContentLoaded', fn);
+                }
+            }
+        JS;
 
         return HTML::createTag(
             'script',
