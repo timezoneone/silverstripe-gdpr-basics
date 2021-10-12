@@ -28,6 +28,17 @@ class CookieConsent extends Extension
         $config = $this->siteConfig;
         $tagManagerId = $this->getGtmId();
         $analyticsId = $this->getGaId();
+
+        if (!$config->GDPRIsActive) {
+            if ($tagManagerId) {
+                Requirements::insertHeadTags(
+                    $this->renderGoogleTagManagerScriptTag($tagManagerId)
+                );
+            }
+
+            return;
+        }
+
         if (
             SiteConfigGDPR::is_enable_for_request() &&
             ($tagManagerId || $analyticsId)
