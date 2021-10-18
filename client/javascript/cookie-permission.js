@@ -92,13 +92,15 @@ function getCookieConsent() {
   //check for cookieConsent cookie
   window.cookieConsent = getCookie('cookieConsent');
 
-  if (window.cookieConsent === '') {
+  if (window.cookieConsent !== 'granted') {
     gtag('consent', 'default', {
       ad_storage: 'denied',
       analytics_storage: 'denied',
     });
 
-    permissionPrompt.classList.add('open');
+    if (window.cookieConsent === '') {
+      permissionPrompt.classList.add('open');
+    }
   }
 
   var eventToFire;
