@@ -16,9 +16,11 @@ use SilverStripe\SiteConfig\SiteConfig;
 use TimeZoneOne\GDPR\Extension\SiteConfigGDPR;
 use TimeZoneOne\GDPR\Model\DataControlRequest;
 
-class DataControlFormController extends \PageController  {
+class DataControlFormController extends \PageController
+{
 
-    public function init() {
+    public function init()
+    {
         parent::init();
     }
 
@@ -27,10 +29,11 @@ class DataControlFormController extends \PageController  {
         'confirm'
     ];
 
-    public function index(){
+    public function index()
+    {
 
         $config = SiteConfig::current_site_config();
-        if(!$config->DataControlFormsActive){
+        if(!$config->DataControlFormsActive) {
             return $this->httpError(404);
         }else{
             $html = DBHTMLText::create();
@@ -44,11 +47,12 @@ class DataControlFormController extends \PageController  {
 
     }
 
-    public function verify($request){
+    public function verify($request)
+    {
 
         $config = SiteConfig::current_site_config();
         $formData = $request->postVars();
-        if(empty($formData) || !$config->DataControlFormsActive){
+        if(empty($formData) || !$config->DataControlFormsActive) {
             return $this->httpError(404);
 
         }else{
@@ -83,13 +87,14 @@ class DataControlFormController extends \PageController  {
         }
     }
 
-    public function confirm($request){
+    public function confirm($request)
+    {
 
         $data = $request->getVars();
         $config = SiteConfig::current_site_config();
         $htmlMessage = DBHTMLText::create();
 
-        if( empty($data) || !isset($data['verification']) || !isset($data['request']) || !$config->DataControlFormsActive){
+        if( empty($data) || !isset($data['verification']) || !isset($data['request']) || !$config->DataControlFormsActive) {
             return $this->httpError(404);
         }else{
 
@@ -104,13 +109,13 @@ class DataControlFormController extends \PageController  {
             //look up record in database..
             $record = DataControlRequest::get()->filter(array('Verification'=>$Verification, 'ID'=> $ID))->First();
 
-            if(!$record){
+            if(!$record) {
                 $htmlMessage->setValue("<p>Please sumbit a new request <a href=\"/data-control\">here</a> or contact our <a href=\"mailto:'.$dataProtectionOfficer->Email.'\">Data Protection Officer</a>.</p>");
                 return $this->customise(array(
                     'Title' => 'Sorry, we couldn\'t find your original request.',
                     'Content' => $htmlMessage
                 ))->renderWith('Page');
-            }else if($record->Exists()){
+            }else if($record->Exists()) {
                 //update record in Database.
                 $record->Status = 'Ready to action';
                 $record->write();
@@ -123,9 +128,10 @@ class DataControlFormController extends \PageController  {
         }
     }
 
-    public function DataRequestForm(){
+    public function DataRequestForm()
+    {
 
-        if(SiteConfigGDPR::is_enable_for_request()){
+        if(SiteConfigGDPR::is_enable_for_request()) {
             $checkbox = HiddenField::create('IsEUResident')->setValue(1);
         }else{
             $checkbox = CheckboxField::create('IsEUResident', 'I am an EU resident');
@@ -158,6 +164,7 @@ class DataControlFormController extends \PageController  {
         $form->setFormAction(Controller::join_links(BASE_URL, 'data-control', 'verify'));
         return $form;
     }
+
     public function getControllerName()
     {
         return DataControlFormController::class;

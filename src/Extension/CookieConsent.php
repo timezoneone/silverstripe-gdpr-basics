@@ -3,6 +3,7 @@
 namespace TimeZoneOne\GDPR\Extension;
 
 use SilverStripe\Core\Extension;
+use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\HTML;
@@ -15,11 +16,13 @@ class CookieConsent extends Extension
         $this->siteConfig = SiteConfig::current_site_config();
     }
 
-    public function getGtmId() {
+    public function getGtmId()
+    {
         return $this->siteConfig->GTMCode;
     }
 
-    public function getGaId() {
+    public function getGaId()
+    {
         return $this->siteConfig->GACode;
     }
 
@@ -28,10 +31,19 @@ class CookieConsent extends Extension
         $config = $this->siteConfig;
         $tagManagerId = $this->getGtmId();
         $analyticsId = $this->getGaId();
-        if (
-            SiteConfigGDPR::is_enable_for_request() &&
-            ($tagManagerId || $analyticsId)
-        ) {
+
+        if (!$config->GDPRIsActive) {
+            if ($tagManagerId) {
+                Requirements::insertHeadTags(
+                    $this->renderGoogleTagManagerScriptTag($tagManagerId)
+                );
+            }
+
+            return;
+        }
+
+        if (SiteConfigGDPR::is_enable_for_request()
+        && ($tagManagerId || $analyticsId)) {
             if ($tagManagerId) {
                 Requirements::insertHeadTags(
                     $this->renderGoogleTagManagerScriptTag($tagManagerId)
@@ -58,6 +70,15 @@ class CookieConsent extends Extension
                 'timezoneone/silverstripe-gdpr-basics: client/dist/cookie-permission.min.js'
             );
         }
+    }
+
+    public function gtmNoscript()
+    {
+        $tagManagerId = $this->getGtmId();
+
+        $noscript = $this->renderGoogleTagManagerNoscriptTag($tagManagerId);
+
+        return DBField::create_field('HTMLText', $noscript);
     }
 
     public function GDPR()
@@ -115,22 +136,42 @@ class CookieConsent extends Extension
         ]))->renderWith('Style');
     }
 
-    private function renderGoogleTagManagerScriptTag($tagManagerId)
+    private function renderGoogleTagManagerScriptTag($gtmId)
     {
-        return HTML::createTag('script', [
-            'async' => true,
-            'src' => "https://www.googletagmanager.com/gtag/js?id={$tagManagerId}",
-        ]);
+        $content = <<<JS
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer', '$gtmId');
+        JS;
+
+        return HTML::createTag('script', [], $content);
+    }
+
+    private function renderGoogleTagManagerNoscriptTag($gtmId)
+    {
+        $iframe = HTML::createTag(
+            'iframe',
+            [
+                "src" => "https://www.googletagmanager.com/ns.html?id=$gtmId",
+                "height" => 0,
+                "width" => 0,
+                "style" => 'display:none;visibility:hidden'
+            ]
+        );
+
+        return HTML::createTag('noscript', [], $iframe);
     }
 
     public function renderGoogleAnalyticsScriptTag($analyticsId)
     {
-        $content =
-            // https://developers.google.com/analytics/devguides/collection/analyticsjs#alternative_async_tag
-            /** @lang JavaScript */
-            "window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+        // https://developers.google.com/analytics/devguides/collection/analyticsjs#alternative_async_tag
+        $content = <<<JS
+            window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
             ga('create', '{$analyticsId}', 'auto');
-            ga('send', 'pageview');";
+            ga('send', 'pageview');
+        JS;
 
         return HTML::createTag(
             'script',
@@ -145,29 +186,31 @@ class CookieConsent extends Extension
 
     private function renderGoogleLoaderScriptTag($tagManagerId, $analyticsId)
     {
-        $content =
-            /** @lang JavaScript */
-            "window.gaConf = {
-                    gaHasFired: false,
-                    tagManagerId: '{$tagManagerId}',
-                    analyticsId: '{$analyticsId}'
-                };
-                
-                function waitForAllTheThings(fn) {
-                    var isDocReady = document.attachEvent
-                        ? document.readyState === 'complete'
-                        : document.readyState !== 'loading';
+        $content = <<<JS
+            window.gaConf = {
+                gaHasFired: false,
+                tagManagerId: '{$tagManagerId}',
+                analyticsId: '{$analyticsId}'
+            };
 
-                    if (isDocReady){
-                        fn();
-                    } else {
-                        document.addEventListener('DOMContentLoaded', fn);
-                    }
-                }";
+            function waitForAllTheThings(fn) {
+                var isDocReady = document.attachEvent
+                    ? document.readyState === 'complete'
+                    : document.readyState !== 'loading';
+
+                if (isDocReady){
+                    fn();
+                } else {
+                    document.addEventListener('DOMContentLoaded', fn);
+                }
+            }
+        JS;
 
         return HTML::createTag(
             'script',
-            ['type' => 'application/javascript'],
+            [
+                'type' => 'application/javascript'
+            ],
             $content
         );
     }
