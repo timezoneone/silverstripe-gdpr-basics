@@ -9,7 +9,7 @@
   "author": "TimeZoneOne",
   "repository": {
     "type": "git",
-    "url": "git+http://git.timezoneone.com/timezoneone/panorama-estore-theme.git"
+    "url": "https://github.com/timezoneone/silverstripe-gdpr-basics"
   },
   "license": "ISC",
   "devDependencies": {

@@ -2,7 +2,7 @@
     "name": "timezoneone/silverstripe-gdpr-basics",
     "description": "SilverStripe GDPR Cookie Policy Module",
     "type": "silverstripe-vendormodule",
-    "homepage": "http://git.timezoneone.com/timezoneone/silverstripe-gdpr-basics",
+    "homepage": "https://github.com/timezoneone/silverstripe-gdpr-basics",
     "require": {
         "silverstripe/cms": "^4.0.0",
         "silverstripe/framework": "^4.0.0",
