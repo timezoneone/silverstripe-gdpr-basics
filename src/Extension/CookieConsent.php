@@ -2,13 +2,13 @@
 
 namespace TimeZoneOne\GDPR\Extension;
 
+use SilverStripe\View\HTML;
 use SilverStripe\Core\Extension;
+use SilverStripe\View\ArrayData;
+use SilverStripe\View\Requirements;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\SiteConfig\SiteConfig;
-use SilverStripe\View\ArrayData;
-use SilverStripe\View\HTML;
-use SilverStripe\View\Requirements;
 
 class CookieConsent extends Extension
 {
