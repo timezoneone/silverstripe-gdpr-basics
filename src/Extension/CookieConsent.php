@@ -2,12 +2,13 @@
 
 namespace TimeZoneOne\GDPR\Extension;
 
+use SilverStripe\View\HTML;
 use SilverStripe\Core\Extension;
+use SilverStripe\View\ArrayData;
+use SilverStripe\View\Requirements;
+use SilverStripe\Control\Controller;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\SiteConfig\SiteConfig;
-use SilverStripe\View\ArrayData;
-use SilverStripe\View\HTML;
-use SilverStripe\View\Requirements;
 
 class CookieConsent extends Extension
 {
@@ -28,6 +29,11 @@ class CookieConsent extends Extension
 
     public function onAfterInit()
     {
+        // Don't run in nested Controller
+        if ($this->owner !== Controller::curr()) {
+            return;
+        }
+
         $config = $this->siteConfig;
         $tagManagerId = $this->getGtmId();
         $analyticsId = $this->getGaId();
