@@ -12,18 +12,25 @@ use SilverStripe\SiteConfig\SiteConfig;
 
 class CookieConsent extends Extension
 {
-    public function onBeforeInit()
+     public function onBeforeInit()
     {
+        $this->initSiteConfig();
+    }
+
+    private function initSiteConfig() {
         $this->siteConfig = SiteConfig::current_site_config();
     }
 
+    //Added check on existence of SiteConfig as it wasn't being initialised by the Aloglia reindex task as it doesn't initialise a PageController.
     public function getGtmId()
     {
+        $this->siteConfig ?? $this->initSiteConfig();
         return $this->siteConfig->GTMCode;
     }
 
     public function getGaId()
     {
+        $this->siteConfig ?? $this->initSiteConfig();
         return $this->siteConfig->GACode;
     }
 
