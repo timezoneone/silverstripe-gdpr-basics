@@ -5,10 +5,29 @@ function gtag() {
 }
 
 function setConsentGranted() {
-  gtag('consent', 'update', {
-    ad_storage: 'granted',
-    analytics_storage: 'granted'
-  });
+  if (consentListeners.length) {
+    consentListeners.forEach(function(callback) {
+      callback('granted')
+    });
+  } else {
+    gtag('consent', 'update', {
+      ad_storage: 'granted',
+      analytics_storage: 'granted'
+    });
+  }
+}
+
+function setConsentDenied() {
+  if (consentListeners.length) {
+    consentListeners.forEach(function(callback) {
+      callback('denied');
+    });
+  } else {
+    gtag('consent', 'update', {
+      ad_storage: 'denied',
+      analytics_storage: 'denied'
+    });
+  }
 }
 
 // Initialise gtag
@@ -21,7 +40,6 @@ if (window.gaConf.tagManagerId) {
 if (window.gaConf.analyticsId) {
   gtag('config', window.gaConf.analyticsId);
 }
-
 
 //CookieConsentGranted Event
 var CookieConsentGranted;
@@ -186,5 +204,7 @@ document.addEventListener('CookieConsentGranted', function () {
 document.addEventListener('CookieConsentDenied', function () {
   document.body.classList.add('CookieConsentDenied');
   document.body.classList.remove('CookieConsentGranted');
+
+  setConsentDenied();
   window.gaConf.gaHasFired = true;
 });
