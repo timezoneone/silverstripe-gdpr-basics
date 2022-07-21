@@ -42,26 +42,22 @@ if (window.gaConf.analyticsId) {
 }
 
 //CookieConsentGranted Event
-var CookieConsentGranted;
-if (document.createEvent) {
-  CookieConsentGranted = document.createEvent('HTMLEvents');
-  CookieConsentGranted.initEvent('CookieConsentGranted', true, true);
-} else {
-  CookieConsentGranted = document.createEventObject();
-  CookieConsentGranted.eventType = 'CookieConsentGranted';
-}
-CookieConsentGranted.eventName = 'CookieConsentGranted';
+var CookieConsentGranted = new Event(
+  'CookieConsentGranted',
+  {
+    bubbles: true,
+    cancelable: true
+  }
+);
 
 //CookieConsentDenied Event
-var CookieConsentDenied;
-if (document.createEvent) {
-  CookieConsentDenied = document.createEvent('HTMLEvents');
-  CookieConsentDenied.initEvent('CookieConsentDenied', true, true);
-} else {
-  CookieConsentDenied = document.createEventObject();
-  CookieConsentDenied.eventType = 'CookieConsentDenied';
-}
-CookieConsentDenied.eventName = 'CookieConsentDenied';
+var CookieConsentDenied = new Event(
+  'CookieConsentDenied',
+  {
+    bubbles: true,
+    cancelable: true
+  }
+);
 
 function getCookie(cname) {
   var name = cname + '=';
@@ -87,7 +83,7 @@ function setCookie(name, value, days) {
   expire.setTime(today.getTime() + 3600000 * 24 * days);
 
   document.cookie =
-    name + '=' + escape(value) +
+    name + '=' + decodeURIComponent(value) +
     ';expires=' + expire.toGMTString() +
     ';path=/;domain=' + window.BaseHref;
 }
@@ -122,11 +118,7 @@ function getCookieConsent() {
     // if permission hasn't previously been granted
     // fire the 'CookieConsentGranted' event...
     if (!checkCookieConsent()) {
-      if (document.createEvent) {
-        document.dispatchEvent(CookieConsentGranted);
-      } else {
-        document.fireEvent('on' + event.eventType, CookieConsentGranted);
-      }
+      document.dispatchEvent(CookieConsentGranted);
     }
 
     setCookie('cookieConsent', 'granted', 365, '');
@@ -149,11 +141,7 @@ function getCookieConsent() {
     // if permission wasn't already denied,
     // fire the 'CookieConsentDenied' event...
     if (checkCookieConsent()) {
-      if (document.createEvent) {
-        document.dispatchEvent(CookieConsentDenied);
-      } else {
-        document.fireEvent('on' + event.eventType, CookieConsentDenied);
-      }
+      document.dispatchEvent(CookieConsentDenied);
     }
 
     setCookie('cookieConsent', 'false', 365, '');
