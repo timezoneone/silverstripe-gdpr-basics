@@ -55,6 +55,11 @@ class CookieConsent extends Extension
                 $this->renderConsentListenerScriptTag()
             );
 
+            // TODO: Disable this when the GTM Tag Template is in use.
+            Requirements::insertHeadTags(
+                $this->renderDefaultConsentScriptTag()
+            );
+
             if ($tagManagerId) {
                 Requirements::insertHeadTags(
                     $this->renderGoogleTagManagerScriptTag($tagManagerId)
@@ -168,6 +173,59 @@ class CookieConsent extends Extension
             window.addUpdateUserConsentListener = (callback) => {
                 consentListeners.push(callback);
             }
+        JS;
+
+        return HTML::createTag('script', [], $content);
+    }
+
+    /**
+     * Renders the DefaultConsent script tag
+     *
+     * Attempts to set a default consent state
+     * and update the consent state based on the cookie value.
+     *
+     * The GTM Tag Template is preferred though.
+     *
+     * @return string
+     */
+    private function renderDefaultConsentScriptTag() {
+        $content = <<<JS
+            function getCookie(cname) {
+                var name = cname + '=';
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i].trim();
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return '';
+            }
+
+            window.cookieConsent = getCookie('cookieConsent');
+
+            function checkCookieConsent() {
+                return window.cookieConsent === 'granted';
+            }
+
+            function setConsentState() {
+
+                console.log('setConsentState');
+
+                gtag('consent', 'default', {
+                    ad_storage: 'denied',
+                    analytics_storage: 'denied',
+                });
+
+                if (checkCookieConsent()) {
+                    gtag('consent', 'update', {
+                        ad_storage: 'granted',
+                        analytics_storage: 'granted',
+                    });
+                }
+            }
+
+            setConsentState();
         JS;
 
         return HTML::createTag('script', [], $content);

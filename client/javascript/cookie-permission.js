@@ -110,28 +110,8 @@ function getCookieConsent() {
   //check for cookieConsent cookie
   window.cookieConsent = getCookie('cookieConsent');
 
-  if (window.cookieConsent !== 'granted') {
-    gtag('consent', 'default', {
-      ad_storage: 'denied',
-      analytics_storage: 'denied',
-    });
-
-    if (window.cookieConsent === '') {
-      permissionPrompt.classList.add('open');
-    }
-  }
-
-  var eventToFire;
-  if (checkCookieConsent()) {
-    eventToFire = CookieConsentGranted;
-  } else {
-    eventToFire = CookieConsentDenied;
-  }
-
-  if (document.createEvent) {
-    document.dispatchEvent(eventToFire);
-  } else {
-    document.fireEvent('on' + event.eventType, eventToFire);
+  if (window.cookieConsent === '') {
+    permissionPrompt.classList.add('open');
   }
 
   // if user clicks agrees set a cookieConsent cookie
