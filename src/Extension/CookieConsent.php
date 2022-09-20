@@ -14,23 +14,16 @@ class CookieConsent extends Extension
 {
     public function onBeforeInit()
     {
-        $this->initSiteConfig();
-    }
-
-    private function initSiteConfig() {
         $this->siteConfig = SiteConfig::current_site_config();
     }
 
-    //Added check on existence of SiteConfig as it wasn't being initialised by the Aloglia reindex task as it doesn't initialise a PageController.
     public function getGtmId()
     {
-        $this->siteConfig ?? $this->initSiteConfig();
         return $this->siteConfig->GTMCode;
     }
 
     public function getGaId()
     {
-        $this->siteConfig ?? $this->initSiteConfig();
         return $this->siteConfig->GACode;
     }
 
@@ -57,6 +50,11 @@ class CookieConsent extends Extension
 
         if (SiteConfigGDPR::is_enable_for_request()
         && ($tagManagerId || $analyticsId)) {
+
+            Requirements::insertHeadTags(
+                $this->renderConsentListenerScriptTag()
+            );
+
             if ($tagManagerId) {
                 Requirements::insertHeadTags(
                     $this->renderGoogleTagManagerScriptTag($tagManagerId)
@@ -147,6 +145,32 @@ class CookieConsent extends Extension
         return (new ArrayData([
             'PrimaryColor' => $primaryColor,
         ]))->renderWith('Style');
+    }
+
+    /**
+     * Renders the ConsentListener script tag
+     *
+     * Sets a array of callbacks that can be used to set the consent state via
+     * a GTM Tag Template.
+     *
+     * See snippet below for the GTM Tag Template.
+     * https://git.timezoneone.com/-/snippets/42
+     *
+     * @return string
+     */
+    private function renderConsentListenerScriptTag() {
+        $content = <<<JS
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+
+            const consentListeners = [];
+
+            window.addUpdateUserConsentListener = (callback) => {
+                consentListeners.push(callback);
+            }
+        JS;
+
+        return HTML::createTag('script', [], $content);
     }
 
     private function renderGoogleTagManagerScriptTag($gtmId)

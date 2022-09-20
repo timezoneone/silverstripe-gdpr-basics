@@ -5,10 +5,29 @@ function gtag() {
 }
 
 function setConsentGranted() {
-  gtag('consent', 'update', {
-    ad_storage: 'granted',
-    analytics_storage: 'granted'
-  });
+  if (consentListeners.length) {
+    consentListeners.forEach(function(callback) {
+      callback('granted')
+    });
+  } else {
+    gtag('consent', 'update', {
+      ad_storage: 'granted',
+      analytics_storage: 'granted'
+    });
+  }
+}
+
+function setConsentDenied() {
+  if (consentListeners.length) {
+    consentListeners.forEach(function(callback) {
+      callback('denied');
+    });
+  } else {
+    gtag('consent', 'update', {
+      ad_storage: 'denied',
+      analytics_storage: 'denied'
+    });
+  }
 }
 
 // Initialise gtag
@@ -22,28 +41,23 @@ if (window.gaConf.analyticsId) {
   gtag('config', window.gaConf.analyticsId);
 }
 
-
 //CookieConsentGranted Event
-var CookieConsentGranted;
-if (document.createEvent) {
-  CookieConsentGranted = document.createEvent('HTMLEvents');
-  CookieConsentGranted.initEvent('CookieConsentGranted', true, true);
-} else {
-  CookieConsentGranted = document.createEventObject();
-  CookieConsentGranted.eventType = 'CookieConsentGranted';
-}
-CookieConsentGranted.eventName = 'CookieConsentGranted';
+var CookieConsentGranted = new Event(
+  'CookieConsentGranted',
+  {
+    bubbles: true,
+    cancelable: true
+  }
+);
 
 //CookieConsentDenied Event
-var CookieConsentDenied;
-if (document.createEvent) {
-  CookieConsentDenied = document.createEvent('HTMLEvents');
-  CookieConsentDenied.initEvent('CookieConsentDenied', true, true);
-} else {
-  CookieConsentDenied = document.createEventObject();
-  CookieConsentDenied.eventType = 'CookieConsentDenied';
-}
-CookieConsentDenied.eventName = 'CookieConsentDenied';
+var CookieConsentDenied = new Event(
+  'CookieConsentDenied',
+  {
+    bubbles: true,
+    cancelable: true
+  }
+);
 
 function getCookie(cname) {
   var name = cname + '=';
@@ -69,7 +83,7 @@ function setCookie(name, value, days) {
   expire.setTime(today.getTime() + 3600000 * 24 * days);
 
   document.cookie =
-    name + '=' + escape(value) +
+    name + '=' + decodeURIComponent(value) +
     ';expires=' + expire.toGMTString() +
     ';path=/;domain=' + window.BaseHref;
 }
@@ -92,28 +106,8 @@ function getCookieConsent() {
   //check for cookieConsent cookie
   window.cookieConsent = getCookie('cookieConsent');
 
-  if (window.cookieConsent !== 'granted') {
-    gtag('consent', 'default', {
-      ad_storage: 'denied',
-      analytics_storage: 'denied',
-    });
-
-    if (window.cookieConsent === '') {
-      permissionPrompt.classList.add('open');
-    }
-  }
-
-  var eventToFire;
-  if (checkCookieConsent()) {
-    eventToFire = CookieConsentGranted;
-  } else {
-    eventToFire = CookieConsentDenied;
-  }
-
-  if (document.createEvent) {
-    document.dispatchEvent(eventToFire);
-  } else {
-    document.fireEvent('on' + event.eventType, eventToFire);
+  if (window.cookieConsent === '') {
+    permissionPrompt.classList.add('open');
   }
 
   // if user clicks agrees set a cookieConsent cookie
@@ -124,11 +118,7 @@ function getCookieConsent() {
     // if permission hasn't previously been granted
     // fire the 'CookieConsentGranted' event...
     if (!checkCookieConsent()) {
-      if (document.createEvent) {
-        document.dispatchEvent(CookieConsentGranted);
-      } else {
-        document.fireEvent('on' + event.eventType, CookieConsentGranted);
-      }
+      document.dispatchEvent(CookieConsentGranted);
     }
 
     setCookie('cookieConsent', 'granted', 365, '');
@@ -151,11 +141,7 @@ function getCookieConsent() {
     // if permission wasn't already denied,
     // fire the 'CookieConsentDenied' event...
     if (checkCookieConsent()) {
-      if (document.createEvent) {
-        document.dispatchEvent(CookieConsentDenied);
-      } else {
-        document.fireEvent('on' + event.eventType, CookieConsentDenied);
-      }
+      document.dispatchEvent(CookieConsentDenied);
     }
 
     setCookie('cookieConsent', 'false', 365, '');
@@ -186,5 +172,7 @@ document.addEventListener('CookieConsentGranted', function () {
 document.addEventListener('CookieConsentDenied', function () {
   document.body.classList.add('CookieConsentDenied');
   document.body.classList.remove('CookieConsentGranted');
+
+  setConsentDenied();
   window.gaConf.gaHasFired = true;
 });
