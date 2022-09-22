@@ -3,6 +3,7 @@
 namespace TimeZoneOne\GDPR\Extension;
 
 use SilverStripe\View\HTML;
+use SilverStripe\Control\Cookie;
 use SilverStripe\Core\Extension;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\Requirements;
@@ -43,6 +44,8 @@ class CookieConsent extends Extension
                 Requirements::insertHeadTags(
                     $this->renderGoogleTagManagerScriptTag($tagManagerId)
                 );
+
+                Cookie::set('cookieConsent', 'granted', 0, null, null, false, false);
             }
 
             return;
