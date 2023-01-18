@@ -15,16 +15,18 @@ class CookieConsent extends Extension
 {
     public function onBeforeInit()
     {
-        $this->siteConfig = SiteConfig::current_site_config();
+        $this->initSiteConfig();
     }
 
     public function getGtmId()
     {
+        $this->initSiteConfig();
         return $this->siteConfig->GTMCode;
     }
 
     public function getGaId()
     {
+        $this->initSiteConfig();
         return $this->siteConfig->GACode;
     }
 
@@ -98,6 +100,26 @@ class CookieConsent extends Extension
     public function GDPR()
     {
         return SiteConfigGDPR::is_enable_for_request();
+    }
+
+    public function renderGoogleAnalyticsScriptTag($analyticsId)
+    {
+        // https://developers.google.com/analytics/devguides/collection/analyticsjs#alternative_async_tag
+        $content = <<<JS
+            window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+            ga('create', '{$analyticsId}', 'auto');
+            ga('send', 'pageview');
+        JS;
+
+        return HTML::createTag(
+            'script',
+            [
+                'type' => 'application/javascript',
+                'src' => 'https://www.google-analytics.com/analytics.js',
+                'async' => true,
+            ],
+            $content
+        );
     }
 
     private function renderCookieConsentPrompt()
@@ -204,26 +226,6 @@ class CookieConsent extends Extension
         return HTML::createTag('noscript', [], $iframe);
     }
 
-    public function renderGoogleAnalyticsScriptTag($analyticsId)
-    {
-        // https://developers.google.com/analytics/devguides/collection/analyticsjs#alternative_async_tag
-        $content = <<<JS
-            window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-            ga('create', '{$analyticsId}', 'auto');
-            ga('send', 'pageview');
-        JS;
-
-        return HTML::createTag(
-            'script',
-            [
-                'type' => 'application/javascript',
-                'src' => 'https://www.google-analytics.com/analytics.js',
-                'async' => true,
-            ],
-            $content
-        );
-    }
-
     private function renderGoogleLoaderScriptTag($tagManagerId, $analyticsId)
     {
         $content = <<<JS
@@ -253,5 +255,10 @@ class CookieConsent extends Extension
             ],
             $content
         );
+    }
+
+    private function initSiteConfig()
+    {
+        $this->siteConfig = $this->siteConfig ?? SiteConfig::current_site_config();
     }
 }
