@@ -1,4 +1,4 @@
-﻿___INFO___
+___INFO___
 
 {
   "type": "TAG",
@@ -19,7 +19,25 @@
 
 ___TEMPLATE_PARAMETERS___
 
-[]
+[
+  {
+    "type": "SELECT",
+    "name": "defaultConsent",
+    "selectItems": [
+      {
+        "value": "granted",
+        "displayValue": "Granted"
+      },
+      {
+        "value": "denied",
+        "displayValue": "Denied"
+      }
+    ],
+    "simpleValueType": true,
+    "defaultValue": "denied",
+    "displayName": "Default Consent"
+  }
+]
 
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
@@ -70,11 +88,11 @@ const main = (data) => {
   log(getCookieValues(COOKIE_NAME)[0]);
   log(checkCookieConsent());
   log(!checkCookieConsent());
-
+  
   // Set default consent state
   setDefaultConsentState({
-    ad_storage: 'denied',
-    analytics_storage: 'denied'
+    ad_storage: data.defaultConsent,
+    analytics_storage: data.defaultConsent
   });
 
   // Update consent state based on the cookie value
@@ -306,3 +324,5 @@ scenarios: []
 ___NOTES___
 
 Created on 22/07/2022, 10:02:42
+
+
