@@ -13,6 +13,8 @@ use SilverStripe\SiteConfig\SiteConfig;
 
 class CookieConsent extends Extension
 {
+    private $siteConfig;
+    
     public function onBeforeInit()
     {
         $this->initSiteConfig();
