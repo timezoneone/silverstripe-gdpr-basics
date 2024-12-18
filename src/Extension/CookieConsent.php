@@ -155,7 +155,7 @@ class CookieConsent extends Extension
             : 'Decline';
 
         return (new ArrayData([
-            'DomainName' => $_SERVER['HTTP_HOST'],
+            'DomainName' => $_SERVER['HTTP_HOST'] ?? '',
             'CookieConsentDescription' => $CookieConsentDescription,
             'CookieConsentDescriptionJS' => $CookieConsentDescriptionJS,
             'CookieConsentAgreeButtonLabel' => $CookieConsentAgreeButtonLabel,
